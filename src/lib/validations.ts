@@ -9,8 +9,6 @@ export const createListSchema = z.object({
   birthdayLabel: z.string().max(100).optional(),
   eventDate: z.string().optional(),
   message: z.string().max(500).optional(),
-  accessType: z.enum(["public", "password"]),
-  accessPassword: z.string().min(4).max(100).optional().catch(undefined),
 });
 
 export const updateListSchema = z.object({
@@ -19,9 +17,6 @@ export const updateListSchema = z.object({
   birthdayLabel: z.string().max(100).optional(),
   eventDate: z.string().optional(),
   message: z.string().max(500).optional(),
-  accessType: z.enum(["public", "password"]).optional(),
-  accessPassword: z.string().min(4).max(100).optional().catch(undefined),
-  hideReservations: z.boolean().optional(),
   invitationHeadline: z.string().max(200).optional().or(z.literal("")),
   invitationMessage: z.string().max(2000).optional().or(z.literal("")),
 });

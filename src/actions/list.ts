@@ -6,14 +6,9 @@ import { db } from "@/db";
 import { hexclaveServerApp } from "@/hexclave/server";
 import { createListSchema, updateListSchema } from "@/lib/validations";
 import { generateSlug } from "@/lib/slug";
-import bcrypt from "bcryptjs";
 
 function getOwnerGuard() {
   return hexclaveServerApp.getUser();
-}
-
-async function hashPassword(password: string) {
-  return bcrypt.hash(password, 12);
 }
 
 export async function createList(
@@ -29,11 +24,7 @@ export async function createList(
     return { error: "Bitte alle Pflichtfelder ausfüllen" };
   }
 
-  const { accessPassword, eventDate, ...rest } = parsed.data;
-
-  if (rest.accessType === "password" && !accessPassword) {
-    return { error: "Bitte ein Passwort eingeben" };
-  }
+  const { eventDate, ...rest } = parsed.data;
 
   const slug = generateSlug();
 
@@ -44,10 +35,6 @@ export async function createList(
       slug,
       ...rest,
       eventDate: eventDate ? new Date(eventDate) : null,
-      accessPassword:
-        rest.accessType === "password" && accessPassword
-          ? await hashPassword(accessPassword)
-          : null,
     },
   });
 
@@ -90,25 +77,12 @@ export async function updateList(
   const parsed = updateListSchema.safeParse(raw);
   if (!parsed.success) return { error: "Ungültige Eingabe" };
 
-  const { accessPassword, eventDate, accessType, invitationHeadline, invitationMessage, ...rest } = parsed.data;
+  const { eventDate, invitationHeadline, invitationMessage, ...rest } = parsed.data;
 
   const updateData: Record<string, unknown> = { ...rest };
   if (eventDate) updateData.eventDate = new Date(eventDate);
   if (invitationHeadline !== undefined) updateData.invitationHeadline = invitationHeadline || null;
   if (invitationMessage !== undefined) updateData.invitationMessage = invitationMessage || null;
-
-  if (accessType) {
-    updateData.accessType = accessType;
-    if (accessType === "public") {
-      updateData.accessPassword = null;
-    } else if (accessType === "password") {
-      if (accessPassword) {
-        updateData.accessPassword = await hashPassword(accessPassword);
-      } else if (!list.accessPassword) {
-        return { error: "Bitte ein Passwort eingeben" };
-      }
-    }
-  }
 
   await db.giftList.update({
     where: { id: listId },
@@ -135,11 +109,4 @@ export async function deleteList(listId: string) {
 
   revalidatePath("/dashboard");
   redirect("/dashboard");
-}
-
-export async function verifyListPassword(slug: string, password: string) {
-  const list = await getListBySlug(slug);
-  if (!list || !list.accessPassword) return false;
-
-  return bcrypt.compare(password, list.accessPassword);
 }

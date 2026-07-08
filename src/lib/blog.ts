@@ -26,7 +26,7 @@ export const blogPosts: BlogPost[] = [
       "Schritt 1: Erstelle ein Konto. Besuche Wunschfee und registriere dich kostenlos. Nach der Anmeldung kannst du sofort deine erste Liste anlegen. Gib deiner Liste einen Titel wie 'Max' 30. Geburtstag' oder 'Weihnachten 2026'.",
       "Schritt 2: Füge Geschenke hinzu. Kopiere einfach Amazon-Links in das Eingabefeld – Titel, Bild und Preis werden automatisch erkannt. Das spart Zeit und deine Gäste sehen sofort, um welches Produkt es sich handelt.",
       "Schritt 3: Teile die Liste. Kopiere den Link zu deiner Liste und teile ihn per WhatsApp, E-Mail oder Instagram. Deine Freunde und Familie können die Liste aufrufen, Geschenke reservieren und sehen, was bereits vergeben ist.",
-      "Tipp: Aktiviere die Passwort-Funktion, falls du die Liste nur für bestimmte Personen zugänglich machen möchtest.",
+      "Tipp: Teile den Link nur mit den Personen, die du einladen möchtest – so bleibt die Liste in deinem gewünschten Kreis.",
     ],
   },
   {
@@ -98,7 +98,7 @@ export const blogPosts: BlogPost[] = [
     content: [
       "Weihnachten ist die Zeit der Geschenke – aber auch die Zeit der Hektik. Wer kauft wem was? Was wünscht sich Oma? Und hat der kleine Neffe nicht schon genug Spielzeug?",
       "Eine Familien-Wunschliste schafft Abhilfe. Jedes Familienmitglied kann seine eigenen Wünsche eintragen, und alle sehen auf einen Blick, was bereits reserviert wurde.",
-      "Praktisch: Jedes Mitglied kann seine eigene Liste führen. Die Listen können mit einem Passwort geschützt werden. Reservierungen sind anonym – die Beschenkten sehen nicht, wer was reserviert hat. So bleibt die Überraschung erhalten.",
+      "Praktisch: Jedes Mitglied kann seine eigene Liste führen. Reservierungen sind anonym – die Beschenkten sehen nicht, wer was reserviert hat. So bleibt die Überraschung erhalten.",
     ],
   },
   {
@@ -462,7 +462,7 @@ export const blogPosts: BlogPost[] = [
     content: [
       "Weihnachten rückt näher und du fragst dich jedes Jahr: Was schenke ich wem? Mit einer organisierten Familien-Wunschliste wird die Bescherung entspannt und alle sind glücklich.",
       "Der Plan: Jedes Familienmitglied erstellt eine eigene Liste auf Wunschfee. Alle Wünsche werden gesammelt: von Omas Strickwolle bis zum Enkels Gaming-Headset. Jeder kann sehen, was die anderen sich wünschen, und Geschenke reservieren.",
-      "Praktisch: Niemand kauft doppelt. Die Listen können mit einem Passwort geschützt werden. Die Beschenkten sehen nicht, wer was reserviert hat – die Überraschung bleibt bis unterm Baum erhalten.",
+      "Praktisch: Niemand kauft doppelt. Die Beschenkten sehen nicht, wer was reserviert hat – die Überraschung bleibt bis unterm Baum erhalten.",
       "Ein Tipp für die ganze Familie: Startet die Wunschlisten rechtzeitig vor Weihnachten. So haben alle genug Zeit, die Wünsche zu sammeln und die Geschenke in Ruhe zu besorgen.",
     ],
   },

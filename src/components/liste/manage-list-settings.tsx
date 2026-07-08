@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Sheet,
   SheetContent,
@@ -24,8 +25,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
-import { Settings, Trash2, Loader2, Globe, Lock, Mail } from "lucide-react";
+import { Settings, Trash2, Loader2, Mail } from "lucide-react";
 import { updateList, deleteList } from "@/actions/list";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -38,7 +38,6 @@ interface ManageListSettingsProps {
 export function ManageListSettings({ list }: ManageListSettingsProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [accessType, setAccessType] = useState(list.accessType);
 
   async function handleUpdate(
     _prev: { error: string } | null,
@@ -98,66 +97,12 @@ export function ManageListSettings({ list }: ManageListSettingsProps) {
             <Separator />
 
             <div className="space-y-2">
-              <Label>Zugriff</Label>
-              <div className="flex gap-4">
-                <label className="flex flex-1 cursor-pointer items-center gap-3 rounded-lg border p-4 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                  <input
-                    type="radio"
-                    name="accessType"
-                    value="public"
-                    checked={accessType === "public"}
-                    onChange={() => setAccessType("public")}
-                    className="h-4 w-4 accent-primary"
-                  />
-                  <Globe className="h-5 w-5 text-muted-foreground" />
-                  <div className="text-sm">
-                    <div className="font-medium">Öffentlich</div>
-                    <div className="text-muted-foreground">
-                      Jeder mit dem Link kann die Liste sehen
-                    </div>
-                  </div>
-                </label>
-                <label className="flex flex-1 cursor-pointer items-center gap-3 rounded-lg border p-4 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
-                  <input
-                    type="radio"
-                    name="accessType"
-                    value="password"
-                    checked={accessType === "password"}
-                    onChange={() => setAccessType("password")}
-                    className="h-4 w-4 accent-primary"
-                  />
-                  <Lock className="h-5 w-5 text-muted-foreground" />
-                  <div className="text-sm">
-                    <div className="font-medium">Passwort</div>
-                    <div className="text-muted-foreground">
-                      Nur mit Passwort zugänglich
-                    </div>
-                  </div>
-                </label>
-              </div>
-            </div>
-
-            {accessType === "password" && (
-              <div className="space-y-2">
-                <Label htmlFor="edit-password">Passwort</Label>
-                <Input
-                  id="edit-password"
-                  name="accessPassword"
-                  type="password"
-                  placeholder="Neues Passwort"
-                />
-              </div>
-            )}
-
-            <Separator />
-
-            <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-muted-foreground" />
                 <Label className="font-medium">Einladungstext</Label>
               </div>
               <p className="text-xs text-muted-foreground">
-                Optional: Passe den Text auf der Einladungsseite an.
+                Optional: Passe den Text auf der Einladungsseite an. Mit <code className="rounded bg-muted px-1 py-0.5 text-[10px]">{`{name}`}</code> wird der Name des Gastes eingefügt.
               </p>
             </div>
             <div className="space-y-2">

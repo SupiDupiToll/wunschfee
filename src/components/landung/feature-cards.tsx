@@ -17,7 +17,7 @@ const features = [
     icon: "🔒",
     title: "Keine doppelten Geschenke",
     description:
-      "Gäste können Geschenke reservieren. Optional mit Passwort-Schutz.",
+      "Gäste können Geschenke reservieren – kein Verschenken mehr.",
   },
   {
     icon: "🎂",

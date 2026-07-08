@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Gift, Lock } from "lucide-react";
+import { Gift } from "lucide-react";
 import type { GiftList } from "@/db/schema";
 
 interface ListCardProps {
@@ -32,15 +32,7 @@ export function ListCard({ list }: ListCardProps) {
                 </p>
               )}
             </div>
-            <div className="flex gap-1">
-              {list.accessType === "password" && (
-                <Badge variant="secondary" className="gap-1">
-                  <Lock className="h-3 w-3" />
-                  Geschützt
-                </Badge>
-              )}
-
-            </div>
+            <div className="flex gap-1" />
           </div>
           <div className="mt-3 flex items-center gap-1 text-xs text-muted-foreground">
             <Gift className="h-3 w-3" />

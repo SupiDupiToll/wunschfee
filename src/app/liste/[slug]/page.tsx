@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { db } from "@/db";
@@ -7,7 +6,6 @@ import { hexclaveServerApp } from "@/hexclave/server";
 import { ListHero } from "@/components/liste/list-hero";
 import { GiftCard } from "@/components/liste/gift-card";
 import { EmptyItems } from "@/components/liste/empty-items";
-import { PasswordProtectedList } from "@/components/liste/password-protected-list";
 import { JsonLd } from "@/components/shared/json-ld";
 import { PromoBanner } from "@/components/liste/promo-banner";
 import { ArrowLeft } from "lucide-react";
@@ -74,17 +72,6 @@ export default async function PublicListPage({ params }: Props) {
     where: { listId: list.id },
     orderBy: { sortOrder: "asc" },
   });
-
-  if (list.accessType === "password" && !isOwner) {
-    return (
-      <div className="flex min-h-screen flex-col">
-        <Suspense>
-          <PasswordProtectedList list={list} items={items} />
-        </Suspense>
-        <Footer />
-      </div>
-    );
-  }
 
   return (
     <>

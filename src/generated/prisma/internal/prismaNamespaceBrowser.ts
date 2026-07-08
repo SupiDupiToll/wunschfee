@@ -80,8 +80,6 @@ export const GiftListScalarFieldEnum = {
   birthdayLabel: 'birthdayLabel',
   eventDate: 'eventDate',
   message: 'message',
-  accessType: 'accessType',
-  accessPassword: 'accessPassword',
   hideReservations: 'hideReservations',
   isArchived: 'isArchived',
   invitationHeadline: 'invitationHeadline',
