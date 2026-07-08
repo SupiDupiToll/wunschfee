@@ -40,7 +40,10 @@ export async function createList(
       slug,
       ...rest,
       eventDate: eventDate ? new Date(eventDate) : null,
-      accessPassword: accessPassword ? await hashPassword(accessPassword) : null,
+      accessPassword:
+        rest.accessType === "password" && accessPassword
+          ? await hashPassword(accessPassword)
+          : null,
     },
   });
 
@@ -83,11 +86,19 @@ export async function updateList(
   const parsed = updateListSchema.safeParse(raw);
   if (!parsed.success) return { error: "Ungültige Eingabe" };
 
-  const { accessPassword, eventDate, ...rest } = parsed.data;
+  const { accessPassword, eventDate, accessType, ...rest } = parsed.data;
 
   const updateData: Record<string, unknown> = { ...rest };
   if (eventDate) updateData.eventDate = new Date(eventDate);
-  if (accessPassword) updateData.accessPassword = await hashPassword(accessPassword);
+
+  if (accessType === "public") {
+    updateData.accessPassword = null;
+  } else if (accessType === "password") {
+    if (accessPassword) {
+      updateData.accessPassword = await hashPassword(accessPassword);
+    }
+    updateData.accessType = "password";
+  }
 
   await db.giftList.update({
     where: { id: listId },

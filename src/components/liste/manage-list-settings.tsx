@@ -24,7 +24,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Separator } from "@/components/ui/separator";
-import { Settings, Trash2, Loader2 } from "lucide-react";
+import { Settings, Trash2, Loader2, Globe, Lock } from "lucide-react";
 import { updateList, deleteList } from "@/actions/list";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -94,6 +94,44 @@ export function ManageListSettings({ list }: ManageListSettingsProps) {
             </div>
 
             <Separator />
+
+            <div className="space-y-2">
+              <Label>Zugriff</Label>
+              <div className="flex gap-4">
+                <label className="flex flex-1 cursor-pointer items-center gap-3 rounded-lg border p-4 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                  <input
+                    type="radio"
+                    name="accessType"
+                    value="public"
+                    defaultChecked={list.accessType === "public"}
+                    className="h-4 w-4 accent-primary"
+                  />
+                  <Globe className="h-5 w-5 text-muted-foreground" />
+                  <div className="text-sm">
+                    <div className="font-medium">Öffentlich</div>
+                    <div className="text-muted-foreground">
+                      Jeder mit dem Link kann die Liste sehen
+                    </div>
+                  </div>
+                </label>
+                <label className="flex flex-1 cursor-pointer items-center gap-3 rounded-lg border p-4 has-[:checked]:border-primary has-[:checked]:bg-primary/5">
+                  <input
+                    type="radio"
+                    name="accessType"
+                    value="password"
+                    defaultChecked={list.accessType === "password"}
+                    className="h-4 w-4 accent-primary"
+                  />
+                  <Lock className="h-5 w-5 text-muted-foreground" />
+                  <div className="text-sm">
+                    <div className="font-medium">Passwort</div>
+                    <div className="text-muted-foreground">
+                      Nur mit Passwort zugänglich
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
 
             <div className="space-y-2">
               <Label htmlFor="edit-password">
