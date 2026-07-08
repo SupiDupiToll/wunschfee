@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getListBySlug } from "@/actions/list";
+import { hexclaveServerApp } from "@/hexclave/server";
 import { InvitationCard } from "@/components/liste/invitation-card";
 import QRCode from "qrcode";
 
@@ -18,10 +19,14 @@ export default async function InvitationPage({ params }: Props) {
 
   if (!list) notFound();
 
+  const user = await hexclaveServerApp.getUser();
+  const isOwner = user?.id === list.userId;
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://wunschfee.sdtoll.de";
   const listUrl = `${siteUrl}/liste/${list.slug}`;
+  const invitationUrl = `${siteUrl}/liste/${list.slug}/einladung`;
 
-  const qrDataUrl = await QRCode.toDataURL(listUrl, {
+  const qrDataUrl = await QRCode.toDataURL(invitationUrl, {
     width: 300,
     margin: 2,
     color: {
@@ -43,8 +48,10 @@ export default async function InvitationPage({ params }: Props) {
     <InvitationCard
       list={list}
       listUrl={listUrl}
+      invitationUrl={invitationUrl}
       qrDataUrl={qrDataUrl}
       wunschfeeQr={wunschfeeQr}
+      isOwner={isOwner}
     />
   );
 }

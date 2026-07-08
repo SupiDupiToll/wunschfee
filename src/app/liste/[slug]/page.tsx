@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { db } from "@/db";
 import { getListBySlug } from "@/actions/list";
 import { hexclaveServerApp } from "@/hexclave/server";
@@ -67,6 +67,10 @@ export default async function PublicListPage({ params }: Props) {
 
   const user = await hexclaveServerApp.getUser();
   const isOwner = user?.id === list.userId;
+
+  if (isOwner) {
+    redirect(`/liste/${list.slug}/verwalten`);
+  }
 
   const items = await db.giftItem.findMany({
     where: { listId: list.id },

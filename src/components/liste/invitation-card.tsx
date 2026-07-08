@@ -3,19 +3,21 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Copy, Check, Printer, Share2, Download, Gift, ArrowLeft, User } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import { Copy, Check, Printer, Share2, Gift, ArrowLeft, User, Pencil, X, Save } from "lucide-react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
+import { updateList } from "@/actions/list";
 import type { GiftList } from "@/db/schema";
 
 interface InvitationCardProps {
   list: GiftList;
   listUrl: string;
+  invitationUrl: string;
   qrDataUrl: string;
   wunschfeeQr: string;
+  isOwner: boolean;
 }
 
 function personalise(text: string, name: string): string {
@@ -24,17 +26,24 @@ function personalise(text: string, name: string): string {
   return `${text.replace(/[!.]?$/, "")}, ${name}!`;
 }
 
-export function InvitationCard({ list, listUrl, qrDataUrl, wunschfeeQr }: InvitationCardProps) {
+export function InvitationCard({ list, listUrl, invitationUrl, qrDataUrl, wunschfeeQr, isOwner }: InvitationCardProps) {
   const [copied, setCopied] = useState(false);
-  const [pdfLoading, setPdfLoading] = useState(false);
   const [name, setName] = useState("");
-  const cardRef = useRef<HTMLDivElement>(null);
+  const [editing, setEditing] = useState(false);
+  const [editHeadline, setEditHeadline] = useState(list.invitationHeadline || "");
+  const [editMessage, setEditMessage] = useState(list.invitationMessage || "");
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const n = params.get("name");
     if (n) setName(n);
   }, []);
+
+  useEffect(() => {
+    setEditHeadline(list.invitationHeadline || "");
+    setEditMessage(list.invitationMessage || "");
+  }, [list.invitationHeadline, list.invitationMessage]);
 
   const baseHeadline = list.invitationHeadline || "Du bist eingeladen!";
   const headline = personalise(baseHeadline, name);
@@ -50,7 +59,28 @@ export function InvitationCard({ list, listUrl, qrDataUrl, wunschfeeQr }: Invita
     window.history.replaceState({}, "", url.toString());
   }
 
-  const shareUrl = name ? `${listUrl}?name=${encodeURIComponent(name)}` : listUrl;
+  async function handleSave() {
+    setSaving(true);
+    const formData = new FormData();
+    formData.set("invitationHeadline", editHeadline);
+    formData.set("invitationMessage", editMessage);
+    const result = await updateList(list.id, null, formData);
+    if (result?.error) {
+      toast.error(result.error);
+    } else {
+      toast.success("Einladungstext gespeichert");
+      setEditing(false);
+    }
+    setSaving(false);
+  }
+
+  function handleCancelEdit() {
+    setEditHeadline(list.invitationHeadline || "");
+    setEditMessage(list.invitationMessage || "");
+    setEditing(false);
+  }
+
+  const shareUrl = name ? `${invitationUrl}?name=${encodeURIComponent(name)}` : invitationUrl;
 
   async function handleCopyLink() {
     try {
@@ -86,31 +116,6 @@ export function InvitationCard({ list, listUrl, qrDataUrl, wunschfeeQr }: Invita
     }
   }
 
-  async function handleDownloadPdf() {
-    if (!cardRef.current) return;
-    setPdfLoading(true);
-    try {
-      const canvas = await html2canvas(cardRef.current, {
-        scale: 2,
-        backgroundColor: "#ffffff",
-        logging: false,
-        useCORS: true,
-        allowTaint: false,
-      });
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`einladung-${list.slug}.pdf`);
-      toast.success("PDF heruntergeladen!");
-    } catch {
-      toast.error("PDF konnte nicht erstellt werden");
-    } finally {
-      setPdfLoading(false);
-    }
-  }
-
   const formattedDate = list.eventDate
     ? new Date(list.eventDate).toLocaleDateString("de-DE", {
         day: "numeric",
@@ -122,15 +127,60 @@ export function InvitationCard({ list, listUrl, qrDataUrl, wunschfeeQr }: Invita
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-br from-amber-50 via-white to-amber-50 print:bg-white">
       <div className="mx-auto w-full max-w-xl flex-1 px-4 py-8">
-        <div className="print:hidden">
+        <div className="mb-6 flex items-center justify-between print:hidden">
           <Link
-            href={listUrl}
-            className="mb-6 flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+            href={isOwner ? `/liste/${list.slug}/verwalten` : listUrl}
+            className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            Zur Wunschliste
+            {isOwner ? "Zurück zur Verwaltung" : "Zur Wunschliste"}
           </Link>
+
+          {isOwner && !editing && (
+            <button
+              onClick={() => setEditing(true)}
+              className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              Text bearbeiten
+            </button>
+          )}
         </div>
+
+        {editing && (
+          <div className="mb-6 space-y-4 rounded-xl border border-amber-200/60 bg-white p-4 shadow-sm print:hidden">
+            <h3 className="text-sm font-medium">Einladungstext bearbeiten</h3>
+            <div className="space-y-2">
+              <label className="text-xs text-muted-foreground">
+                Überschrift (<code className="rounded bg-muted px-1 py-0.5">{`{name}`}</code> für den Namen)
+              </label>
+              <Input
+                value={editHeadline}
+                onChange={(e) => setEditHeadline(e.target.value)}
+                placeholder="Du bist eingeladen!"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs text-muted-foreground">Einladungstext (optional)</label>
+              <Textarea
+                value={editMessage}
+                onChange={(e) => setEditMessage(e.target.value)}
+                placeholder="z.B. Ich freue mich auf euch! Hier sind meine Geschenkwünsche …"
+                rows={3}
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button size="sm" onClick={handleSave} disabled={saving}>
+                <Save className="mr-1.5 h-3.5 w-3.5" />
+                {saving ? "Wird gespeichert…" : "Speichern"}
+              </Button>
+              <Button size="sm" variant="outline" onClick={handleCancelEdit}>
+                <X className="mr-1.5 h-3.5 w-3.5" />
+                Abbrechen
+              </Button>
+            </div>
+          </div>
+        )}
 
         <div className="mb-6 print:hidden">
           <div className="flex items-center gap-2 rounded-xl border border-amber-200/50 bg-white px-4 py-2.5 shadow-sm">
@@ -144,10 +194,7 @@ export function InvitationCard({ list, listUrl, qrDataUrl, wunschfeeQr }: Invita
           </div>
         </div>
 
-        <div
-          ref={cardRef}
-          className="overflow-hidden rounded-2xl border border-amber-200/60 bg-white shadow-lg print:shadow-none"
-        >
+        <div className="overflow-hidden rounded-2xl border border-amber-200/60 bg-white shadow-lg print:shadow-none">
           <div className="px-8 pt-10 pb-6 text-center">
             <p className="text-xs font-medium uppercase tracking-[0.2em] text-primary/60">
               Wunschfee
@@ -159,20 +206,16 @@ export function InvitationCard({ list, listUrl, qrDataUrl, wunschfeeQr }: Invita
 
           {list.invitationMessage && (
             <div className="px-8 py-4 text-center">
-              <p className="mx-auto max-w-md text-base leading-relaxed text-muted-foreground italic">
-                &ldquo;{list.invitationMessage}&rdquo;
+              <p className="mx-auto max-w-md whitespace-pre-line text-muted-foreground">
+                {list.invitationMessage}
               </p>
             </div>
           )}
 
           <div className="border-t border-amber-100/60 px-8 py-6 text-center">
-            <p className="text-sm text-muted-foreground">
-              {list.honoreeName} hat eine Wunschliste erstellt:
-            </p>
-            <h1 className="mt-1 font-serif text-2xl text-foreground">
+            <h1 className="font-serif text-2xl text-foreground">
               {list.title}
             </h1>
-
             {list.birthdayLabel && (
               <p className="mt-1.5 text-sm text-muted-foreground">
                 🎂 {list.birthdayLabel}
@@ -188,13 +231,13 @@ export function InvitationCard({ list, listUrl, qrDataUrl, wunschfeeQr }: Invita
           <div className="px-8 pb-8 text-center">
             <Link
               href={listUrl}
-              className="inline-flex h-12 items-center gap-2 rounded-xl bg-primary px-8 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md"
+              className="print:hidden inline-flex h-12 items-center gap-2 rounded-xl bg-primary px-8 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:bg-primary/90 hover:shadow-md"
             >
               <Gift className="h-4 w-4" />
               Zur Wunschliste
             </Link>
 
-            <div className="mt-4 flex items-center justify-center gap-3">
+            <div className="mt-4 flex items-center justify-center gap-3 print:hidden">
               <div className="h-px flex-1 bg-amber-200/50" />
               <span className="text-[10px] uppercase tracking-wider text-muted-foreground/60">
                 oder via QR-Code
@@ -202,7 +245,7 @@ export function InvitationCard({ list, listUrl, qrDataUrl, wunschfeeQr }: Invita
               <div className="h-px flex-1 bg-amber-200/50" />
             </div>
 
-            <div className="mt-4 inline-flex items-center gap-3 rounded-xl bg-amber-50/80 p-2.5">
+            <div className="mt-4 inline-flex items-center gap-3 rounded-xl bg-amber-50/80 p-2.5 print:hidden">
               <div className="rounded-lg bg-white p-1.5 shadow-sm">
                 <Image
                   src={qrDataUrl}
@@ -263,15 +306,6 @@ export function InvitationCard({ list, listUrl, qrDataUrl, wunschfeeQr }: Invita
           <Button variant="outline" className="gap-2" onClick={handlePrint}>
             <Printer className="h-4 w-4" />
             Drucken
-          </Button>
-          <Button
-            variant="default"
-            className="gap-2"
-            onClick={handleDownloadPdf}
-            disabled={pdfLoading}
-          >
-            <Download className="h-4 w-4" />
-            {pdfLoading ? "Wird erstellt…" : "PDF herunterladen"}
           </Button>
         </div>
       </div>

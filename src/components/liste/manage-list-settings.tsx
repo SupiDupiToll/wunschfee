@@ -4,7 +4,6 @@ import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Sheet,
   SheetContent,
@@ -25,7 +24,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Separator } from "@/components/ui/separator";
-import { Settings, Trash2, Loader2, Mail } from "lucide-react";
+import { Settings, Trash2, Loader2 } from "lucide-react";
 import { updateList, deleteList } from "@/actions/list";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -94,38 +93,7 @@ export function ManageListSettings({ list }: ManageListSettingsProps) {
               />
             </div>
 
-            <Separator />
-
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-muted-foreground" />
-                <Label className="font-medium">Einladungstext</Label>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Optional: Passe den Text auf der Einladungsseite an. Mit <code className="rounded bg-muted px-1 py-0.5 text-[10px]">{`{name}`}</code> wird der Name des Gastes eingefügt.
-              </p>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-invitation-headline">Überschrift</Label>
-              <Input
-                id="edit-invitation-headline"
-                name="invitationHeadline"
-                defaultValue={list.invitationHeadline || ""}
-                placeholder="Du bist eingeladen!"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="edit-invitation-message">Einladungstext</Label>
-              <Textarea
-                id="edit-invitation-message"
-                name="invitationMessage"
-                defaultValue={list.invitationMessage || ""}
-                placeholder="z.B. Ich freue mich auf euch! Hier sind meine Geschenkwünsche …"
-                rows={4}
-              />
-            </div>
-
-            <Button
+                  <Button
               type="submit"
               className="w-full"
               disabled={pending}

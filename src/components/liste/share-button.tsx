@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, Share2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -27,9 +27,16 @@ export function ShareButton({ slug }: ShareButtonProps) {
     }
   }
 
-  async function handleShare() {
+  function handleWhatsApp() {
+    const text = encodeURIComponent(
+      `🎁 Schau dir meine Wunschliste an:\n\n${url}`
+    );
+    window.open(`https://wa.me/?text=${text}`, "_blank", "noopener noreferrer");
+  }
+
+  function handleShare() {
     if (navigator.share) {
-      await navigator.share({
+      navigator.share({
         title: "Geschenkeliste",
         url,
       });
@@ -39,17 +46,23 @@ export function ShareButton({ slug }: ShareButtonProps) {
   }
 
   return (
-    <Button
-      onClick={handleShare}
-      variant="outline"
-      className="gap-2"
-    >
-      {copied ? (
-        <Check className="h-4 w-4 text-green-500" />
-      ) : (
-        <Copy className="h-4 w-4" />
-      )}
-      {copied ? "Kopiert!" : "Link kopieren"}
-    </Button>
+    <div className="flex flex-wrap items-center justify-center gap-2">
+      <Button variant="outline" size="sm" className="gap-1.5" onClick={handleCopy}>
+        {copied ? (
+          <Check className="h-3.5 w-3.5 text-green-500" />
+        ) : (
+          <Copy className="h-3.5 w-3.5" />
+        )}
+        {copied ? "Kopiert!" : "Link kopieren"}
+      </Button>
+      <Button variant="outline" size="sm" className="gap-1.5" onClick={handleWhatsApp}>
+        <Share2 className="h-3.5 w-3.5" />
+        WhatsApp
+      </Button>
+      <Button variant="outline" size="sm" className="gap-1.5" onClick={handleShare}>
+        <Share2 className="h-3.5 w-3.5" />
+        Teilen
+      </Button>
+    </div>
   );
 }
