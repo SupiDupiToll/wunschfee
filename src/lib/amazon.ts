@@ -1,6 +1,8 @@
 const CORS_PROXIES = [
   (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
   (url: string) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+  (url: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
+  (url: string) => `https://cors.eu.org/${encodeURIComponent(url)}`,
 ];
 
 export function extractAsin(url: string): string | null {
@@ -66,24 +68,52 @@ interface ScrapedData {
   price: string | null;
 }
 
-function parseJsonLd(html: string): { title?: string; image?: string; price?: string } | null {
-  const match = html.match(/<script[^>]+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/);
-  if (!match) return null;
-  try {
-    const parsed = JSON.parse(match[1]);
-    const product = parsed["@type"] === "Product" ? parsed : undefined;
-    if (!product) return null;
-    const offer = product.offers?.["@type"] === "Offer" ? product.offers
-      : Array.isArray(product.offers) ? product.offers[0]
-      : undefined;
-    return {
-      title: product.name,
-      image: product.image,
-      price: offer?.price?.toString(),
-    };
-  } catch {
-    return null;
+function parseJsonLdPrice(html: string): string | null {
+  const regex = /<script[^>]+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g;
+  let match;
+  while ((match = regex.exec(html)) !== null) {
+    try {
+      const parsed = JSON.parse(match[1]);
+      const candidates = parsed["@type"] === "Product"
+        ? [parsed]
+        : parsed["@graph"]?.filter((i: Record<string, unknown>) => i["@type"] === "Product") || [];
+      for (const product of candidates) {
+        const offers = product.offers;
+        const offer = offers?.["@type"] === "Offer"
+          ? offers
+          : Array.isArray(offers)
+            ? offers.find((o: Record<string, unknown>) => o?.["@type"] === "Offer")
+            : undefined;
+        if (offer?.price) return offer.price.toString();
+      }
+    } catch {
+      // skip malformed JSON-LD
+    }
   }
+  return null;
+}
+
+function parseJsonLdImage(html: string): string | null {
+  const regex = /<script[^>]+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g;
+  let match;
+  while ((match = regex.exec(html)) !== null) {
+    try {
+      const parsed = JSON.parse(match[1]);
+      const candidates = parsed["@type"] === "Product"
+        ? [parsed]
+        : parsed["@graph"]?.filter((i: Record<string, unknown>) => i["@type"] === "Product") || [];
+      for (const product of candidates) {
+        if (product.image) return typeof product.image === "string" ? product.image : null;
+      }
+    } catch {
+      // skip
+    }
+  }
+  return null;
+}
+
+function isInstallmentPrice(text: string): boolean {
+  return /\b(ab\s|monat|woche|raten?|pro\s+(monat|woche|jahr)|im\s+monat|monatlich|anzahlung)\b/i.test(text);
 }
 
 function parsePriceFromMeta(html: string): string | null {
@@ -91,14 +121,59 @@ function parsePriceFromMeta(html: string): string | null {
     || null;
 }
 
+function isMainPriceSize(html: string, pos: number): boolean {
+  // Prüft ob innerhalb von 150 Zeichen vor pos ein data-a-size="l" oder "xl" steht
+  const before = html.slice(Math.max(0, pos - 150), pos);
+  return /data-a-size="[xl]+"/.test(before);
+}
+
 function parsePriceFromHtml(html: string): string | null {
-  const blocks = html.matchAll(/class="a-price"[^>]*>([\s\S]*?)<\/span>\s*<\/span>\s*<\/span>/g);
-  for (const block of blocks) {
-    const w = block[0].match(/class="a-price-whole"[^>]*>(\d[\d.]*)/)?.[1];
-    if (!w) continue;
-    const f = block[0].match(/class="a-price-fraction"[^>]*>(\d+)/)?.[1];
-    return f ? `${w},${f} €` : `${w} €`;
+  // 1) a-offscreen mit data-a-size="l"/"xl" (Hauptpreis)
+  const offscreenRegex = /class="a-offscreen"[^>]*>([^<]+)</g;
+  let m;
+  while ((m = offscreenRegex.exec(html)) !== null) {
+    const text = m[1].trim();
+    if (!text || isInstallmentPrice(text)) continue;
+    if (isMainPriceSize(html, m.index)) return text;
   }
+
+  // 2) Fallback: irgendein a-offscreen (kein data-a-size="l" vorhanden)
+  offscreenRegex.lastIndex = 0;
+  while ((m = offscreenRegex.exec(html)) !== null) {
+    const text = m[1].trim();
+    if (text && !isInstallmentPrice(text)) return text;
+  }
+
+  // 3) a-price-whole/fraction mit data-a-size="l"/"xl"
+  const wholeRegex = /class="a-price-whole"[^>]*>(\d[\d.]*)<\/span>/g;
+  let wm;
+  while ((wm = wholeRegex.exec(html)) !== null) {
+    const ctx = html.slice(Math.max(0, wm.index - 200), wm.index);
+    if (isInstallmentPrice(ctx)) continue;
+    if (!isMainPriceSize(html, wm.index)) continue;
+    const w = wm[1];
+    const rest = html.slice(wm.index);
+    const fm = rest.match(/class="a-price-fraction"[^>]*>(\d+)/);
+    if (fm && fm.index !== undefined && fm.index < 500) {
+      return `${w},${fm[1]} €`;
+    }
+    return `${w} €`;
+  }
+
+  // 4) Letzter Fallback: irgendein a-price-whole/fraction (Raten gefiltert)
+  wholeRegex.lastIndex = 0;
+  while ((wm = wholeRegex.exec(html)) !== null) {
+    const ctx = html.slice(Math.max(0, wm.index - 200), wm.index);
+    if (isInstallmentPrice(ctx)) continue;
+    const w = wm[1];
+    const rest = html.slice(wm.index);
+    const fm = rest.match(/class="a-price-fraction"[^>]*>(\d+)/);
+    if (fm && fm.index !== undefined && fm.index < 500) {
+      return `${w},${fm[1]} €`;
+    }
+    return `${w} €`;
+  }
+
   return null;
 }
 
@@ -116,26 +191,29 @@ function parseImage(html: string): string | null {
     || null;
 }
 
+function formatPrice(price: string): string {
+  const cleaned = price.replace(/[^\d.,]/g, "");
+  if (cleaned.includes(",")) return `${cleaned} €`;
+  if (cleaned.includes(".")) return `${cleaned.replace(".", ",")} €`;
+  return `${cleaned} €`;
+}
+
 function parseHtml(html: string): ScrapedData | null {
   const title = parseTitle(html);
   if (!title || title.length < 2) return null;
 
   const cleanTitle = title.replace(/ : [A-Za-z0-9.-]+\.[a-z]+: .+$/, "").trim();
 
-  // 1) JSON-LD (zuverlässigster Preis)
-  const jsonld = parseJsonLd(html);
-  const imageUrl = jsonld?.image || parseImage(html);
+  // 1) JSON-LD (zuverlässigster Preis, nie Raten)
+  const jsonldPrice = parseJsonLdPrice(html);
+  const imageUrl = parseJsonLdImage(html) || parseImage(html);
 
-  const price = jsonld?.price
+  const price = jsonldPrice
     || parsePriceFromMeta(html)
     || parsePriceFromHtml(html)
     || null;
 
-  const formattedPrice = price
-    ? (price.includes(",") || price.includes("€") ? price
-        : price.includes(".") ? `${price.replace(".", ",")} €`
-        : `${price} €`)
-    : null;
+  const formattedPrice = price ? formatPrice(price) : null;
 
   return {
     title: cleanTitle.slice(0, 500),
