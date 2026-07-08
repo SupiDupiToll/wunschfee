@@ -37,6 +37,8 @@ export type GiftListMinAggregateOutputType = {
   accessPassword: string | null
   hideReservations: boolean | null
   isArchived: boolean | null
+  invitationHeadline: string | null
+  invitationMessage: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,6 +56,8 @@ export type GiftListMaxAggregateOutputType = {
   accessPassword: string | null
   hideReservations: boolean | null
   isArchived: boolean | null
+  invitationHeadline: string | null
+  invitationMessage: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -71,6 +75,8 @@ export type GiftListCountAggregateOutputType = {
   accessPassword: number
   hideReservations: number
   isArchived: number
+  invitationHeadline: number
+  invitationMessage: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -90,6 +96,8 @@ export type GiftListMinAggregateInputType = {
   accessPassword?: true
   hideReservations?: true
   isArchived?: true
+  invitationHeadline?: true
+  invitationMessage?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -107,6 +115,8 @@ export type GiftListMaxAggregateInputType = {
   accessPassword?: true
   hideReservations?: true
   isArchived?: true
+  invitationHeadline?: true
+  invitationMessage?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -124,6 +134,8 @@ export type GiftListCountAggregateInputType = {
   accessPassword?: true
   hideReservations?: true
   isArchived?: true
+  invitationHeadline?: true
+  invitationMessage?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -214,6 +226,8 @@ export type GiftListGroupByOutputType = {
   accessPassword: string | null
   hideReservations: boolean
   isArchived: boolean
+  invitationHeadline: string | null
+  invitationMessage: string | null
   createdAt: Date
   updatedAt: Date
   _count: GiftListCountAggregateOutputType | null
@@ -252,6 +266,8 @@ export type GiftListWhereInput = {
   accessPassword?: Prisma.StringNullableFilter<"GiftList"> | string | null
   hideReservations?: Prisma.BoolFilter<"GiftList"> | boolean
   isArchived?: Prisma.BoolFilter<"GiftList"> | boolean
+  invitationHeadline?: Prisma.StringNullableFilter<"GiftList"> | string | null
+  invitationMessage?: Prisma.StringNullableFilter<"GiftList"> | string | null
   createdAt?: Prisma.DateTimeFilter<"GiftList"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GiftList"> | Date | string
   items?: Prisma.GiftItemListRelationFilter
@@ -270,6 +286,8 @@ export type GiftListOrderByWithRelationInput = {
   accessPassword?: Prisma.SortOrderInput | Prisma.SortOrder
   hideReservations?: Prisma.SortOrder
   isArchived?: Prisma.SortOrder
+  invitationHeadline?: Prisma.SortOrderInput | Prisma.SortOrder
+  invitationMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   items?: Prisma.GiftItemOrderByRelationAggregateInput
@@ -291,6 +309,8 @@ export type GiftListWhereUniqueInput = Prisma.AtLeast<{
   accessPassword?: Prisma.StringNullableFilter<"GiftList"> | string | null
   hideReservations?: Prisma.BoolFilter<"GiftList"> | boolean
   isArchived?: Prisma.BoolFilter<"GiftList"> | boolean
+  invitationHeadline?: Prisma.StringNullableFilter<"GiftList"> | string | null
+  invitationMessage?: Prisma.StringNullableFilter<"GiftList"> | string | null
   createdAt?: Prisma.DateTimeFilter<"GiftList"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GiftList"> | Date | string
   items?: Prisma.GiftItemListRelationFilter
@@ -309,6 +329,8 @@ export type GiftListOrderByWithAggregationInput = {
   accessPassword?: Prisma.SortOrderInput | Prisma.SortOrder
   hideReservations?: Prisma.SortOrder
   isArchived?: Prisma.SortOrder
+  invitationHeadline?: Prisma.SortOrderInput | Prisma.SortOrder
+  invitationMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.GiftListCountOrderByAggregateInput
@@ -332,6 +354,8 @@ export type GiftListScalarWhereWithAggregatesInput = {
   accessPassword?: Prisma.StringNullableWithAggregatesFilter<"GiftList"> | string | null
   hideReservations?: Prisma.BoolWithAggregatesFilter<"GiftList"> | boolean
   isArchived?: Prisma.BoolWithAggregatesFilter<"GiftList"> | boolean
+  invitationHeadline?: Prisma.StringNullableWithAggregatesFilter<"GiftList"> | string | null
+  invitationMessage?: Prisma.StringNullableWithAggregatesFilter<"GiftList"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"GiftList"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"GiftList"> | Date | string
 }
@@ -349,6 +373,8 @@ export type GiftListCreateInput = {
   accessPassword?: string | null
   hideReservations?: boolean
   isArchived?: boolean
+  invitationHeadline?: string | null
+  invitationMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.GiftItemCreateNestedManyWithoutListInput
@@ -367,6 +393,8 @@ export type GiftListUncheckedCreateInput = {
   accessPassword?: string | null
   hideReservations?: boolean
   isArchived?: boolean
+  invitationHeadline?: string | null
+  invitationMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.GiftItemUncheckedCreateNestedManyWithoutListInput
@@ -385,6 +413,8 @@ export type GiftListUpdateInput = {
   accessPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hideReservations?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invitationHeadline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.GiftItemUpdateManyWithoutListNestedInput
@@ -403,6 +433,8 @@ export type GiftListUncheckedUpdateInput = {
   accessPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hideReservations?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invitationHeadline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.GiftItemUncheckedUpdateManyWithoutListNestedInput
@@ -421,6 +453,8 @@ export type GiftListCreateManyInput = {
   accessPassword?: string | null
   hideReservations?: boolean
   isArchived?: boolean
+  invitationHeadline?: string | null
+  invitationMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -438,6 +472,8 @@ export type GiftListUpdateManyMutationInput = {
   accessPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hideReservations?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invitationHeadline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -455,6 +491,8 @@ export type GiftListUncheckedUpdateManyInput = {
   accessPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hideReservations?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invitationHeadline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -472,6 +510,8 @@ export type GiftListCountOrderByAggregateInput = {
   accessPassword?: Prisma.SortOrder
   hideReservations?: Prisma.SortOrder
   isArchived?: Prisma.SortOrder
+  invitationHeadline?: Prisma.SortOrder
+  invitationMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -489,6 +529,8 @@ export type GiftListMaxOrderByAggregateInput = {
   accessPassword?: Prisma.SortOrder
   hideReservations?: Prisma.SortOrder
   isArchived?: Prisma.SortOrder
+  invitationHeadline?: Prisma.SortOrder
+  invitationMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -506,6 +548,8 @@ export type GiftListMinOrderByAggregateInput = {
   accessPassword?: Prisma.SortOrder
   hideReservations?: Prisma.SortOrder
   isArchived?: Prisma.SortOrder
+  invitationHeadline?: Prisma.SortOrder
+  invitationMessage?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -562,6 +606,8 @@ export type GiftListCreateWithoutItemsInput = {
   accessPassword?: string | null
   hideReservations?: boolean
   isArchived?: boolean
+  invitationHeadline?: string | null
+  invitationMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -579,6 +625,8 @@ export type GiftListUncheckedCreateWithoutItemsInput = {
   accessPassword?: string | null
   hideReservations?: boolean
   isArchived?: boolean
+  invitationHeadline?: string | null
+  invitationMessage?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -612,6 +660,8 @@ export type GiftListUpdateWithoutItemsInput = {
   accessPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hideReservations?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invitationHeadline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -629,6 +679,8 @@ export type GiftListUncheckedUpdateWithoutItemsInput = {
   accessPassword?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hideReservations?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isArchived?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  invitationHeadline?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  invitationMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -677,6 +729,8 @@ export type GiftListSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   accessPassword?: boolean
   hideReservations?: boolean
   isArchived?: boolean
+  invitationHeadline?: boolean
+  invitationMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   items?: boolean | Prisma.GiftList$itemsArgs<ExtArgs>
@@ -696,6 +750,8 @@ export type GiftListSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   accessPassword?: boolean
   hideReservations?: boolean
   isArchived?: boolean
+  invitationHeadline?: boolean
+  invitationMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["giftList"]>
@@ -713,6 +769,8 @@ export type GiftListSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   accessPassword?: boolean
   hideReservations?: boolean
   isArchived?: boolean
+  invitationHeadline?: boolean
+  invitationMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["giftList"]>
@@ -730,11 +788,13 @@ export type GiftListSelectScalar = {
   accessPassword?: boolean
   hideReservations?: boolean
   isArchived?: boolean
+  invitationHeadline?: boolean
+  invitationMessage?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type GiftListOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "slug" | "title" | "honoreeName" | "birthdayLabel" | "eventDate" | "message" | "accessType" | "accessPassword" | "hideReservations" | "isArchived" | "createdAt" | "updatedAt", ExtArgs["result"]["giftList"]>
+export type GiftListOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "slug" | "title" | "honoreeName" | "birthdayLabel" | "eventDate" | "message" | "accessType" | "accessPassword" | "hideReservations" | "isArchived" | "invitationHeadline" | "invitationMessage" | "createdAt" | "updatedAt", ExtArgs["result"]["giftList"]>
 export type GiftListInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | Prisma.GiftList$itemsArgs<ExtArgs>
   _count?: boolean | Prisma.GiftListCountOutputTypeDefaultArgs<ExtArgs>
@@ -760,6 +820,8 @@ export type $GiftListPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     accessPassword: string | null
     hideReservations: boolean
     isArchived: boolean
+    invitationHeadline: string | null
+    invitationMessage: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["giftList"]>
@@ -1198,6 +1260,8 @@ export interface GiftListFieldRefs {
   readonly accessPassword: Prisma.FieldRef<"GiftList", 'String'>
   readonly hideReservations: Prisma.FieldRef<"GiftList", 'Boolean'>
   readonly isArchived: Prisma.FieldRef<"GiftList", 'Boolean'>
+  readonly invitationHeadline: Prisma.FieldRef<"GiftList", 'String'>
+  readonly invitationMessage: Prisma.FieldRef<"GiftList", 'String'>
   readonly createdAt: Prisma.FieldRef<"GiftList", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"GiftList", 'DateTime'>
 }

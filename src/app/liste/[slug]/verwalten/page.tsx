@@ -10,7 +10,7 @@ import { EmptyItems } from "@/components/liste/empty-items";
 import { AddItemForm } from "@/components/liste/add-item-form";
 import { ManageListSettings } from "@/components/liste/manage-list-settings";
 import { PromoBanner } from "@/components/liste/promo-banner";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Mail } from "lucide-react";
 import Link from "next/link";
 import { Footer } from "@/components/shared/footer";
 
@@ -54,7 +54,16 @@ export default async function ManageListPage({ params }: Props) {
           <h2 className="font-serif text-xl">
             Geschenke ({items.length})
           </h2>
-          <ManageListSettings list={list} />
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/liste/${slug}/einladung`}
+              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-border bg-background px-3 text-sm font-medium whitespace-nowrap text-foreground transition-colors hover:bg-muted"
+            >
+              <Mail className="h-4 w-4" />
+              Einladung
+            </Link>
+            <ManageListSettings list={list} />
+          </div>
         </div>
 
         <Suspense>

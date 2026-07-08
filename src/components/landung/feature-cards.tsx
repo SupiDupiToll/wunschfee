@@ -37,6 +37,12 @@ const features = [
     description:
       "Optionale Funktion: Der Besitzer sieht nicht, wer was reserviert hat.",
   },
+  {
+    icon: "📨",
+    title: "Einladungen & Karten",
+    description:
+      "Erstelle eine Einladung mit persönlichem Text oder eine kompakte Wunschlisten-Karte mit QR-Code – beides als PDF.",
+  },
 ];
 
 export function FeatureCards() {

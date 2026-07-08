@@ -18,8 +18,10 @@ model GiftList {
   message          String?
   accessType       String    @default("public") @map("access_type")
   accessPassword   String?   @map("access_password")
-  hideReservations Boolean   @default(false) @map("hide_reservations")
-  isArchived       Boolean   @default(false) @map("is_archived")
+  hideReservations  Boolean   @default(false) @map("hide_reservations")
+  isArchived        Boolean   @default(false) @map("is_archived")
+  invitationHeadline String?  @map("invitation_headline")
+  invitationMessage  String?  @map("invitation_message")
   createdAt        DateTime  @default(now()) @map("created_at")
   updatedAt        DateTime  @updatedAt @map("updated_at")
 

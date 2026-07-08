@@ -24,7 +24,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Separator } from "@/components/ui/separator";
-import { Settings, Trash2, Loader2, Globe, Lock } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Settings, Trash2, Loader2, Globe, Lock, Mail } from "lucide-react";
 import { updateList, deleteList } from "@/actions/list";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -37,6 +38,7 @@ interface ManageListSettingsProps {
 export function ManageListSettings({ list }: ManageListSettingsProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [accessType, setAccessType] = useState(list.accessType);
 
   async function handleUpdate(
     _prev: { error: string } | null,
@@ -103,7 +105,8 @@ export function ManageListSettings({ list }: ManageListSettingsProps) {
                     type="radio"
                     name="accessType"
                     value="public"
-                    defaultChecked={list.accessType === "public"}
+                    checked={accessType === "public"}
+                    onChange={() => setAccessType("public")}
                     className="h-4 w-4 accent-primary"
                   />
                   <Globe className="h-5 w-5 text-muted-foreground" />
@@ -119,7 +122,8 @@ export function ManageListSettings({ list }: ManageListSettingsProps) {
                     type="radio"
                     name="accessType"
                     value="password"
-                    defaultChecked={list.accessType === "password"}
+                    checked={accessType === "password"}
+                    onChange={() => setAccessType("password")}
                     className="h-4 w-4 accent-primary"
                   />
                   <Lock className="h-5 w-5 text-muted-foreground" />
@@ -133,15 +137,46 @@ export function ManageListSettings({ list }: ManageListSettingsProps) {
               </div>
             </div>
 
+            {accessType === "password" && (
+              <div className="space-y-2">
+                <Label htmlFor="edit-password">Passwort</Label>
+                <Input
+                  id="edit-password"
+                  name="accessPassword"
+                  type="password"
+                  placeholder="Neues Passwort"
+                />
+              </div>
+            )}
+
+            <Separator />
+
             <div className="space-y-2">
-              <Label htmlFor="edit-password">
-                Neues Passwort (optional)
-              </Label>
+              <div className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-muted-foreground" />
+                <Label className="font-medium">Einladungstext</Label>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Optional: Passe den Text auf der Einladungsseite an.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-invitation-headline">Überschrift</Label>
               <Input
-                id="edit-password"
-                name="accessPassword"
-                type="password"
-                placeholder="Neues Passwort"
+                id="edit-invitation-headline"
+                name="invitationHeadline"
+                defaultValue={list.invitationHeadline || ""}
+                placeholder="Du bist eingeladen!"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="edit-invitation-message">Einladungstext</Label>
+              <Textarea
+                id="edit-invitation-message"
+                name="invitationMessage"
+                defaultValue={list.invitationMessage || ""}
+                placeholder="z.B. Ich freue mich auf euch! Hier sind meine Geschenkwünsche …"
+                rows={4}
               />
             </div>
 

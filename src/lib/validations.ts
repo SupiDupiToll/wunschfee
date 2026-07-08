@@ -22,6 +22,8 @@ export const updateListSchema = z.object({
   accessType: z.enum(["public", "password"]).optional(),
   accessPassword: z.string().min(4).max(100).optional().catch(undefined),
   hideReservations: z.boolean().optional(),
+  invitationHeadline: z.string().max(200).optional().or(z.literal("")),
+  invitationMessage: z.string().max(2000).optional().or(z.literal("")),
 });
 
 export const addItemSchema = z.object({

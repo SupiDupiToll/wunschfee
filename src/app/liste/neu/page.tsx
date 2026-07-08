@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,6 +20,7 @@ import { Loader2, Lock, Globe } from "lucide-react";
 
 export default function NewListPage() {
   const [state, formAction, pending] = useActionState(createList, null);
+  const [accessType, setAccessType] = useState("public");
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
@@ -88,7 +89,8 @@ export default function NewListPage() {
                     type="radio"
                     name="accessType"
                     value="public"
-                    defaultChecked
+                    checked={accessType === "public"}
+                    onChange={() => setAccessType("public")}
                     className="h-4 w-4 accent-primary"
                   />
                   <Globe className="h-5 w-5 text-muted-foreground" />
@@ -104,6 +106,8 @@ export default function NewListPage() {
                     type="radio"
                     name="accessType"
                     value="password"
+                    checked={accessType === "password"}
+                    onChange={() => setAccessType("password")}
                     className="h-4 w-4 accent-primary"
                   />
                   <Lock className="h-5 w-5 text-muted-foreground" />
@@ -117,15 +121,18 @@ export default function NewListPage() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="accessPassword">Passwort</Label>
-              <Input
-                id="accessPassword"
-                name="accessPassword"
-                type="password"
-                placeholder="Passwort für Gäste"
-              />
-            </div>
+            {accessType === "password" && (
+              <div className="space-y-2">
+                <Label htmlFor="accessPassword">Passwort</Label>
+                <Input
+                  id="accessPassword"
+                  name="accessPassword"
+                  type="password"
+                  placeholder="Passwort für Gäste"
+                  required
+                />
+              </div>
+            )}
 
             {state?.error && (
               <p className="text-sm text-destructive">{state.error}</p>

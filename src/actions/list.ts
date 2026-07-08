@@ -31,6 +31,10 @@ export async function createList(
 
   const { accessPassword, eventDate, ...rest } = parsed.data;
 
+  if (rest.accessType === "password" && !accessPassword) {
+    return { error: "Bitte ein Passwort eingeben" };
+  }
+
   const slug = generateSlug();
 
   const list = await db.giftList.create({
@@ -86,18 +90,24 @@ export async function updateList(
   const parsed = updateListSchema.safeParse(raw);
   if (!parsed.success) return { error: "Ungültige Eingabe" };
 
-  const { accessPassword, eventDate, accessType, ...rest } = parsed.data;
+  const { accessPassword, eventDate, accessType, invitationHeadline, invitationMessage, ...rest } = parsed.data;
 
   const updateData: Record<string, unknown> = { ...rest };
   if (eventDate) updateData.eventDate = new Date(eventDate);
+  if (invitationHeadline !== undefined) updateData.invitationHeadline = invitationHeadline || null;
+  if (invitationMessage !== undefined) updateData.invitationMessage = invitationMessage || null;
 
-  if (accessType === "public") {
-    updateData.accessPassword = null;
-  } else if (accessType === "password") {
-    if (accessPassword) {
-      updateData.accessPassword = await hashPassword(accessPassword);
+  if (accessType) {
+    updateData.accessType = accessType;
+    if (accessType === "public") {
+      updateData.accessPassword = null;
+    } else if (accessType === "password") {
+      if (accessPassword) {
+        updateData.accessPassword = await hashPassword(accessPassword);
+      } else if (!list.accessPassword) {
+        return { error: "Bitte ein Passwort eingeben" };
+      }
     }
-    updateData.accessType = "password";
   }
 
   await db.giftList.update({
