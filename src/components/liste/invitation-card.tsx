@@ -182,17 +182,19 @@ export function InvitationCard({ list, listUrl, invitationUrl, qrDataUrl, wunsch
           </div>
         )}
 
-        <div className="mb-6 print:hidden">
-          <div className="flex items-center gap-2 rounded-xl border border-amber-200/50 bg-white px-4 py-2.5 shadow-sm">
-            <User className="h-4 w-4 text-muted-foreground" />
-            <Input
-              value={name}
-              onChange={(e) => updateName(e.target.value)}
-              placeholder="Name des Gastes (optional)"
-              className="h-8 border-0 bg-transparent p-0 text-sm shadow-none placeholder:text-muted-foreground/50 focus-visible:ring-0"
-            />
+        {isOwner && (
+          <div className="mb-6 print:hidden">
+            <div className="flex items-center gap-2 rounded-xl border border-amber-200/50 bg-white px-4 py-2.5 shadow-sm">
+              <User className="h-4 w-4 text-muted-foreground" />
+              <Input
+                value={name}
+                onChange={(e) => updateName(e.target.value)}
+                placeholder="Name des Gastes (optional)"
+                className="h-8 border-0 bg-transparent p-0 text-sm shadow-none placeholder:text-muted-foreground/50 focus-visible:ring-0"
+              />
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="overflow-hidden rounded-2xl border border-amber-200/60 bg-white shadow-lg print:shadow-none">
           <div className="px-8 pt-10 pb-6 text-center">

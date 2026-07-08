@@ -16,7 +16,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ShoppingCart, Gift, Lock, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ReserveModal } from "./reserve-modal";
 import { deleteItem } from "@/actions/item";
 import { addAffiliateTag } from "@/lib/amazon";
@@ -29,13 +29,38 @@ interface GiftCardProps {
   isOwner: boolean;
 }
 
+const STORAGE_KEY = "wunschfee_reserved";
+
+function getMyReservedIds(): Set<string> {
+  if (typeof window === "undefined") return new Set();
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return new Set(raw ? JSON.parse(raw) : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function addMyReservedId(id: string) {
+  try {
+    const ids = getMyReservedIds();
+    ids.add(id);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...ids]));
+  } catch { /* ignore */ }
+}
+
 export function GiftCard({ item, list, isOwner }: GiftCardProps) {
   const [showReserveModal, setShowReserveModal] = useState(false);
   const [showBuyDialog, setShowBuyDialog] = useState(false);
   const [isReserved, setIsReserved] = useState(item.isReserved);
   const [reservedBy, setReservedBy] = useState(item.reservedBy);
+  const [reservedByMe, setReservedByMe] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [deleted, setDeleted] = useState(false);
+
+  useEffect(() => {
+    setReservedByMe(getMyReservedIds().has(item.id));
+  }, [item.id]);
 
   async function handleDelete() {
     await deleteItem(item.id);
@@ -45,6 +70,7 @@ export function GiftCard({ item, list, isOwner }: GiftCardProps) {
 
   function handleBuyClick(e: React.MouseEvent) {
     if (!isOwner) {
+      if (isReserved && reservedByMe) return;
       e.preventDefault();
       setShowBuyDialog(true);
     }
@@ -215,6 +241,8 @@ export function GiftCard({ item, list, isOwner }: GiftCardProps) {
         onSuccess={(name) => {
           setIsReserved(true);
           setReservedBy(name);
+          setReservedByMe(true);
+          addMyReservedId(item.id);
           setShowReserveModal(false);
         }}
       />
