@@ -95,7 +95,7 @@ export default async function PublicListPage({ params }: Props) {
             "@type": "ItemList",
             name: list.title,
             description: list.message || `Geschenkeliste für ${list.honoreeName}`,
-            url: `https://wunschfee.app/liste/${list.slug}`,
+            url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://wunschfee.sdtoll.de"}/liste/${list.slug}`,
             itemListElement: items.map((item, i) => ({
               "@type": "ListItem",
               position: i + 1,

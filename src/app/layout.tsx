@@ -15,7 +15,7 @@ const playfair = Playfair_Display({
   variable: "--font-playfair",
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://wunschfee.app";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://wunschfee.sdtoll.de";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),

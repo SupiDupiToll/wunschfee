@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { db } from "@/db";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://wunschfee.app";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://wunschfee.sdtoll.de";
 
   const lists = await db.giftList.findMany({
     where: {

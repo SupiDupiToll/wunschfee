@@ -66,7 +66,7 @@ export default async function BlogArticlePage({ params }: Props) {
           },
           mainEntityOfPage: {
             "@type": "WebPage",
-            url: `https://wunschfee.app/blog/${post.slug}`,
+            url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://wunschfee.sdtoll.de"}/blog/${post.slug}`,
           },
         }}
       />

@@ -26,7 +26,7 @@ export default function BlogPage() {
           name: "Wunschfee Blog",
           description:
             "Tipps & Ideen für Wunschlisten und Geschenke",
-          url: "https://wunschfee.app/blog",
+          url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://wunschfee.sdtoll.de"}/blog`,
         }}
       />
       <div className="flex min-h-screen flex-col">

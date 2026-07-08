@@ -27,7 +27,7 @@ export default function LandingPage() {
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "Wunschfee",
-          url: "https://wunschfee.app",
+          url: process.env.NEXT_PUBLIC_SITE_URL || "https://wunschfee.sdtoll.de",
           description:
             "Erstelle deine persönliche Geschenkeliste und teile sie mit Freunden & Familie.",
           inLanguage: "de-DE",
