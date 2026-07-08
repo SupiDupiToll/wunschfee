@@ -1,0 +1,7 @@
+apikeys:
+  zyte: 0a3925901dcb47f682dd4e5be96b4ac8
+endpoints:
+  default: https://app.zyte.com/api/
+  zyte: https://app.zyte.com/api/2.0/
+projects:
+  zyte: zyte/866466

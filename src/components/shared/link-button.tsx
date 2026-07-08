@@ -1,0 +1,21 @@
+import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+import type { VariantProps } from "class-variance-authority";
+
+interface LinkButtonProps
+  extends React.ComponentProps<typeof Link>,
+    VariantProps<typeof buttonVariants> {}
+
+export function LinkButton({
+  className,
+  variant,
+  size,
+  ...props
+}: LinkButtonProps) {
+  return (
+    <Link
+      className={buttonVariants({ variant, size, className })}
+      {...props}
+    />
+  );
+}

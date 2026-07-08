@@ -1,0 +1,2 @@
+scrapy>=2.11,<3.0
+scrapy-zyte-api>=1.0,<2.0
