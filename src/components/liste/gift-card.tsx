@@ -15,9 +15,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { ShoppingCart, Gift, Lock, Trash2 } from "lucide-react";
+import { ShoppingCart, Gift, Lock, Trash2, Pencil } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ReserveModal } from "./reserve-modal";
+import { EditItemModal } from "./edit-item-modal";
 import { deleteItem } from "@/actions/item";
 import { addAffiliateTag } from "@/lib/amazon";
 import { toast } from "sonner";
@@ -52,6 +53,7 @@ function addMyReservedId(id: string) {
 export function GiftCard({ item, list, isOwner }: GiftCardProps) {
   const [showReserveModal, setShowReserveModal] = useState(false);
   const [showBuyDialog, setShowBuyDialog] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [isReserved, setIsReserved] = useState(item.isReserved);
   const [reservedBy, setReservedBy] = useState(item.reservedBy);
   const [reservedByMe, setReservedByMe] = useState(false);
@@ -88,28 +90,36 @@ export function GiftCard({ item, list, isOwner }: GiftCardProps) {
       <Card className="overflow-hidden transition-all hover:shadow-md">
         <CardContent className="relative flex gap-4 p-4">
           {isOwner && (
-            <AlertDialog>
-              <AlertDialogTrigger className="absolute top-2 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive">
-                <Trash2 className="h-4 w-4" />
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Geschenk löschen?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    &ldquo;{item.title}&rdquo; wird endgültig gelöscht.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handleDelete}
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  >
-                    Löschen
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <>
+              <button
+                onClick={() => setShowEditModal(true)}
+                className="absolute top-2 right-10 z-10 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                <Pencil className="h-4 w-4" />
+              </button>
+              <AlertDialog>
+                <AlertDialogTrigger className="absolute top-2 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive">
+                  <Trash2 className="h-4 w-4" />
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Geschenk löschen?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      &ldquo;{item.title}&rdquo; wird endgültig gelöscht.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Abbrechen</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDelete}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Löschen
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </>
           )}
 
           <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-md bg-muted sm:h-32 sm:w-32">
@@ -233,6 +243,12 @@ export function GiftCard({ item, list, isOwner }: GiftCardProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <EditItemModal
+        open={showEditModal}
+        onOpenChange={setShowEditModal}
+        item={item}
+      />
 
       <ReserveModal
         open={showReserveModal}
