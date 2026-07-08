@@ -66,35 +66,81 @@ interface ScrapedData {
   price: string | null;
 }
 
-function parseHtml(html: string): ScrapedData | null {
-  const title =
-    html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/)?.[1]
+function parseJsonLd(html: string): { title?: string; image?: string; price?: string } | null {
+  const match = html.match(/<script[^>]+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/);
+  if (!match) return null;
+  try {
+    const parsed = JSON.parse(match[1]);
+    const product = parsed["@type"] === "Product" ? parsed : undefined;
+    if (!product) return null;
+    const offer = product.offers?.["@type"] === "Offer" ? product.offers
+      : Array.isArray(product.offers) ? product.offers[0]
+      : undefined;
+    return {
+      title: product.name,
+      image: product.image,
+      price: offer?.price?.toString(),
+    };
+  } catch {
+    return null;
+  }
+}
+
+function parsePriceFromMeta(html: string): string | null {
+  return html.match(/<meta[^>]+property="product:price:amount"[^>]+content="([^"]+)"/)?.[1]
+    || null;
+}
+
+function parsePriceFromHtml(html: string): string | null {
+  const blocks = html.matchAll(/class="a-price"[^>]*>([\s\S]*?)<\/span>\s*<\/span>\s*<\/span>/g);
+  for (const block of blocks) {
+    const w = block[0].match(/class="a-price-whole"[^>]*>(\d[\d.]*)/)?.[1];
+    if (!w) continue;
+    const f = block[0].match(/class="a-price-fraction"[^>]*>(\d+)/)?.[1];
+    return f ? `${w},${f} €` : `${w} €`;
+  }
+  return null;
+}
+
+function parseTitle(html: string): string {
+  return html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/)?.[1]
     || html.match(/<meta[^>]+name="title"[^>]+content="([^"]+)"/)?.[1]
     || html.match(/id="productTitle"[^>]*>([^<]+)</)?.[1]?.trim()
     || "";
+}
 
+function parseImage(html: string): string | null {
+  return html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/)?.[1]
+    || html.match(/id="landingImage"[^>]+src="([^"]+)"/)?.[1]
+    || html.match(/id="imgTagWrapperId"[^>]*>\s*<img[^>]+src="([^"]+)"/)?.[1]
+    || null;
+}
+
+function parseHtml(html: string): ScrapedData | null {
+  const title = parseTitle(html);
   if (!title || title.length < 2) return null;
 
   const cleanTitle = title.replace(/ : [A-Za-z0-9.-]+\.[a-z]+: .+$/, "").trim();
 
-  const imageUrl =
-    html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/)?.[1]
-    || html.match(/id="landingImage"[^>]+src="([^"]+)"/)?.[1]
-    || html.match(/id="imgTagWrapperId"[^>]*>\s*<img[^>]+src="([^"]+)"/)?.[1]
+  // 1) JSON-LD (zuverlässigster Preis)
+  const jsonld = parseJsonLd(html);
+  const imageUrl = jsonld?.image || parseImage(html);
+
+  const price = jsonld?.price
+    || parsePriceFromMeta(html)
+    || parsePriceFromHtml(html)
     || null;
 
-  const price =
-    html.match(/class="a-price-whole"[^>]*>(\d[\d.]*)/)?.[1]
-    ? html.match(/class="a-price-whole"[^>]*>(\d[\d.]*)/)![1]
-      + (html.match(/class="a-price-fraction"[^>]*>(\d+)/)?.[1]
-        ? `,${html.match(/class="a-price-fraction"[^>]*>(\d+)/)![1]} €` : " €")
-    : html.match(/<meta[^>]+property="product:price:amount"[^>]+content="([^"]+)"/)?.[1]
-    || null;
+  const formattedPrice = price
+    ? (price.includes(",") || price.includes("€") ? price
+        : price.includes(".") ? `${price.replace(".", ",")} €`
+        : `${price} €`)
+    : null;
 
   return {
     title: cleanTitle.slice(0, 500),
     imageUrl,
-    price,
+    price: formattedPrice,
   };
 }
 
