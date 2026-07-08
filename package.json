@@ -50,6 +50,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/nanoid": "^3.0.0",
     "@types/node": "^20",
+    "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
