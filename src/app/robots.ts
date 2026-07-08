@@ -10,7 +10,7 @@ export default function robots(): MetadataRoute.Robots {
         allow: "/",
         disallow: [
           "/dashboard",
-          "/liste/neu",
+          "/liste/",
           "/handler/",
           "/*/verwalten",
         ],

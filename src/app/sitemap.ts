@@ -1,21 +1,14 @@
 import type { MetadataRoute } from "next";
-import { db } from "@/db";
+import { blogPosts } from "@/lib/blog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://wunschfee.sdtoll.de";
 
-  const lists = await db.giftList.findMany({
-    where: {
-      isArchived: false,
-    },
-    select: { slug: true, updatedAt: true },
-  });
-
-  const listPages = lists.map((list) => ({
-    url: `${siteUrl}/liste/${list.slug}`,
-    lastModified: list.updatedAt,
-    changeFrequency: "weekly" as const,
-    priority: 0.8,
+  const blogPages = blogPosts.map((post) => ({
+    url: `${siteUrl}/blog/${post.slug}`,
+    lastModified: new Date(post.publishedAt),
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
   }));
 
   return [
@@ -25,6 +18,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 1.0,
     },
-    ...listPages,
+    ...blogPages,
   ];
 }
