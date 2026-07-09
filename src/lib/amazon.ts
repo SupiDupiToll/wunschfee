@@ -1,4 +1,4 @@
-import { scrapeAmazonProduct } from "./brightdata";
+import { scrapeAmazonProduct, scrapeAmazonPrice } from "./brightdata";
 import { parseHtml, type ScrapedData } from "./parse-html";
 
 const CORS_PROXIES = [
@@ -7,6 +7,17 @@ const CORS_PROXIES = [
   (url: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
   (url: string) => `https://cors.eu.org/${encodeURIComponent(url)}`,
 ];
+
+export function proxyImageUrl(url: string | null): string | null {
+  if (!url) return null;
+  if (
+    !url.includes("m.media-amazon.com") &&
+    !url.includes("images-na.ssl-images-amazon.com")
+  ) {
+    return url;
+  }
+  return `https://external-content.duckduckgo.com/iu/?u=${encodeURIComponent(url)}`;
+}
 
 export function extractAsin(url: string): string | null {
   const patterns = [
@@ -41,6 +52,27 @@ export async function cleanAmazonUrl(url: string): Promise<string> {
   } catch {
     return url;
   }
+}
+
+// Schnelle Vorschau: Titel + Bild über CORS-Proxies
+export async function fetchPreview(url: string): Promise<{ title: string; imageUrl: string | null } | null> {
+  const cleanUrl = await cleanAmazonUrl(url);
+
+  const direct = await tryFetch(cleanUrl);
+  if (direct) return { title: direct.title, imageUrl: direct.imageUrl };
+
+  for (const proxy of CORS_PROXIES) {
+    const result = await tryFetch(cleanUrl, proxy);
+    if (result) return { title: result.title, imageUrl: result.imageUrl };
+  }
+
+  return null;
+}
+
+// Preis via Brightdata Dataset API (langsam, aber zuverlässig – für Hintergrund)
+export async function fetchPrice(url: string): Promise<string | null> {
+  const cleanUrl = await cleanAmazonUrl(url);
+  return scrapeAmazonPrice(cleanUrl);
 }
 
 export function addAffiliateTag(url: string): string {

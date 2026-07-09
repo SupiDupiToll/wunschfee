@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { addItem } from "@/actions/item";
-import { fetchProductData } from "@/actions/amazon";
+import { fetchProductData, updateItemPrice } from "@/actions/amazon";
 import { Plus, Loader2, ImageOff } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -19,7 +19,6 @@ interface AddItemFormProps {
 interface PreviewData {
   title: string;
   imageUrl: string | null;
-  price: string | null;
   store?: string;
 }
 
@@ -51,7 +50,6 @@ export function AddItemForm({ listId }: AddItemFormProps) {
         setPreview({
           title: result.title || "",
           imageUrl: result.imageUrl || null,
-          price: result.price || null,
           store: result.store,
         });
       }
@@ -73,13 +71,18 @@ export function AddItemForm({ listId }: AddItemFormProps) {
     } else if (preview) {
       formData.set("title", preview.title);
       formData.set("imageUrl", preview.imageUrl || "");
-      formData.set("price", preview.price || "");
+      formData.set("price", "");
     }
 
     const result = await addItem(null, formData);
-    if (result?.error) {
-      toast.error(result.error);
+    if (!result || "error" in result) {
+      if (result?.error) toast.error(result.error);
       return result;
+    }
+
+    // Preis im Hintergrund per Dataset API fetchen
+    if (url) {
+      updateItemPrice(result.id, url).catch(() => {});
     }
 
     toast.success("Geschenk hinzugefügt!");
@@ -140,11 +143,6 @@ export function AddItemForm({ listId }: AddItemFormProps) {
                 <p className="line-clamp-2 text-sm font-medium">
                   {preview.title}
                 </p>
-                {preview.price && (
-                  <p className="mt-0.5 text-sm text-primary">
-                    {preview.price}
-                  </p>
-                )}
                 {preview.store && (
                   <p className="text-xs text-muted-foreground">
                     {preview.store}

@@ -25,7 +25,7 @@ async function verifyOwner(listId: string) {
 export async function addItem(
   _prev: { error: string } | null,
   formData: FormData
-): Promise<{ error: string } | null> {
+): Promise<{ error: string } | { id: string } | null> {
   const raw = Object.fromEntries(formData);
   const parsed = addItemSchema.safeParse(raw);
   if (!parsed.success) {
@@ -50,9 +50,11 @@ export async function addItem(
     orderBy: { sortOrder: "desc" },
   });
 
+  const itemId = crypto.randomUUID();
+
   await db.giftItem.create({
     data: {
-      id: crypto.randomUUID(),
+      id: itemId,
       listId,
       url,
       title,
@@ -64,7 +66,7 @@ export async function addItem(
 
   revalidatePath(`/liste/${list.slug}`);
   revalidatePath(`/liste/${list.slug}/verwalten`);
-  return null;
+  return { id: itemId };
 }
 
 export async function deleteItem(itemId: string) {
