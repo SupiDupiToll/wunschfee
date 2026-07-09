@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
-import { fetchPreview, fetchPrice, proxyImageUrl, proxyImages, detectStore } from "@/lib/amazon";
+import { fetchPreview, fetchPrice, proxyImageUrl, detectStore } from "@/lib/amazon";
 
 export async function fetchProductData(url: string) {
   if (!url || !url.startsWith("http")) {
@@ -22,7 +22,6 @@ export async function fetchProductData(url: string) {
   return {
     title: preview.title,
     imageUrl: proxyImageUrl(preview.imageUrl),
-    images: proxyImages(preview.images),
     store,
   };
 }

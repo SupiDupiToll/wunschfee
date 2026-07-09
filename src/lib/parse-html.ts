@@ -122,56 +122,41 @@ function parseTitle(html: string): string {
     || "";
 }
 
+/** Extrahiert NUR echte Produktbilder (keine Icons, Empfehlungen etc.) */
 function parseImages(html: string): string[] {
   const $ = cheerio.load(html);
   const images: string[] = [];
 
-  // 1) og:image meta tag
-  const ogImage = $('meta[property="og:image"]').attr("content");
-  if (ogImage) images.push(ogImage);
+  // 1) JSON-LD structured data (product.image)
+  const jsonld = parseJsonLdImages(html);
+  images.push(...jsonld);
 
-  // 2) #landingImage
-  const landingSrc = $("#landingImage").attr("src");
-  if (landingSrc) images.push(landingSrc);
-
-  // 3) #imgTagWrapperId > img
-  const wrapperImg = $("#imgTagWrapperId img").first().attr("src");
-  if (wrapperImg) images.push(wrapperImg);
-
-  // 4) #altImages thumbnails (Amazon's thumbnail strip)
-  //    These are the alternate product views
+  // 2) #altImages – Amazons Thumbnail-Strip (verschiedene Produktansichten)
   $("#altImages").find("img, [data-a-hires]").each((_, el) => {
     const $el = $(el);
     const src = $el.attr("data-a-hires") || $el.attr("src");
-    if (src && src.includes("m.media-amazon.com")) {
+    if (src && src.includes("m.media-amazon.com") && /\.(jpg|png|webp)/i.test(src)) {
       images.push(src);
     }
   });
 
-  // 5) Broad fallback: any img with Amazon CDN in the page
-  //    Captures images that might be outside #altImages
-  $("img[src*='m.media-amazon.com']").each((_, el) => {
-    const src = $(el).attr("src");
-    if (src) images.push(src);
-  });
+  // 3) #landingImage – Hauptproduktbild
+  const landingSrc = $("#landingImage").attr("src");
+  if (landingSrc) images.push(landingSrc);
 
-  // 6) Also check data-a-hires attributes anywhere in the page
-  $("[data-a-hires*='m.media-amazon.com']").each((_, el) => {
-    const src = $(el).attr("data-a-hires");
-    if (src) images.push(src);
-  });
+  // 4) #imgTagWrapperId > img – Fallback für Hauptbild
+  const wrapperImg = $("#imgTagWrapperId img").first().attr("src");
+  if (wrapperImg) images.push(wrapperImg);
 
-  // Deduplicate: group by the base image ID (strip size variant)
+  // Deduplizieren: gleiches Bild trotz Größen-Suffix
   const seen = new Map<string, string>();
   for (const url of images) {
-    // Normalize Amazon image URLs like:
-    // .../I/61ABC._AC_SL1500_.jpg  →  .../I/61ABC.jpg
     const normalized = url
-      .replace(/\._AC_.*?\.jpg$/i, ".jpg")
-      .replace(/\._SL\d+_\.jpg$/i, ".jpg")
-      .replace(/\._SY\d+_\.jpg$/i, ".jpg")
-      .replace(/\._UX\d+_\.jpg$/i, ".jpg")
-      .replace(/\._SX\d+_\.jpg$/i, ".jpg");
+      .replace(/\._AC_.*?\.(jpg|png|webp)$/i, ".$1")
+      .replace(/\._SL\d+_\.(jpg|png|webp)$/i, ".$1")
+      .replace(/\._SX\d+_\.(jpg|png|webp)$/i, ".$1")
+      .replace(/\._SY\d+_\.(jpg|png|webp)$/i, ".$1")
+      .replace(/\._UX\d+_\.(jpg|png|webp)$/i, ".$1");
 
     if (!seen.has(normalized)) {
       seen.set(normalized, url);
@@ -195,10 +180,7 @@ export function parseHtml(html: string): ScrapedData | null {
   const cleanTitle = title.replace(/ : [A-Za-z0-9.-]+\.[a-z]+: .+$/, "").trim();
 
   const jsonldPrice = parseJsonLdPrice(html);
-  const jsonldImages = parseJsonLdImages(html);
-  const htmlImages = parseImages(html);
-
-  const allImages = [...new Set([...jsonldImages, ...htmlImages])];
+  const allImages = parseImages(html);
 
   const imageUrl = allImages.length > 0 ? allImages[0] : null;
 

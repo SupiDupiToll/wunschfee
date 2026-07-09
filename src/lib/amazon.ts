@@ -58,35 +58,22 @@ export async function cleanAmazonUrl(url: string): Promise<string> {
   }
 }
 
-// Schnelle Vorschau: Titel + Bild(er) via Brightdata + CORS-Proxies
-export async function fetchPreview(url: string): Promise<{ title: string; imageUrl: string | null; images: string[] } | null> {
+// Schnelle Vorschau: Titel + Hauptbild via CORS-Proxies (keine Extra-Bilder)
+export async function fetchPreview(url: string): Promise<{ title: string; imageUrl: string | null } | null> {
   const cleanUrl = await cleanAmazonUrl(url);
-  if (!isAmazonUrl(cleanUrl)) {
-    const direct = await tryFetch(cleanUrl);
-    if (direct) return { title: direct.title, imageUrl: direct.imageUrl, images: direct.images };
-    return null;
-  }
 
-  // 1) BrightData Web Unblocker (volle HTML-Seite)
-  const bright = await scrapeAmazonProduct(cleanUrl);
-  if (bright) {
-    return { title: bright.title, imageUrl: bright.imageUrl, images: bright.images };
-  }
-
-  // 2) Direkter Fetch
   const direct = await tryFetch(cleanUrl);
-  if (direct) return { title: direct.title, imageUrl: direct.imageUrl, images: direct.images };
+  if (direct) return { title: direct.title, imageUrl: direct.imageUrl };
 
-  // 3) CORS-Proxies als Fallback
   for (const proxy of CORS_PROXIES) {
     const result = await tryFetch(cleanUrl, proxy);
-    if (result) return { title: result.title, imageUrl: result.imageUrl, images: result.images };
+    if (result) return { title: result.title, imageUrl: result.imageUrl };
   }
 
   return null;
 }
 
-// Preis via Brightdata Web Unblocker
+// Vollständige Produktdaten via Brightdata (Preis + ALLE Bilder)
 export async function fetchPrice(url: string): Promise<{ price: string | null; images: string[] } | null> {
   const cleanUrl = await cleanAmazonUrl(url);
   const product = await scrapeAmazonProduct(cleanUrl);
@@ -166,16 +153,13 @@ export async function scrapeProductData(url: string): Promise<ScrapedData | null
   const cleanUrl = await cleanAmazonUrl(url);
 
   if (isAmazonUrl(cleanUrl)) {
-    // 1) BrightData Web Unblocker (HTML via Proxy, geparst)
     const product = await scrapeAmazonProduct(cleanUrl);
     if (product) return product;
   }
 
-  // 2) Direkter Fetch (HTML parsen)
   const direct = await tryFetch(cleanUrl);
   if (direct) return direct;
 
-  // 3) CORS-Proxies als Fallback
   for (const proxy of CORS_PROXIES) {
     const result = await tryFetch(cleanUrl, proxy);
     if (result) return result;
