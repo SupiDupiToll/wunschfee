@@ -58,25 +58,11 @@ export async function cleanAmazonUrl(url: string): Promise<string> {
   }
 }
 
-// Produktdaten via Brightdata (volle Daten: Titel, Bilder, Preis)
-// Fallback auf CORS-Proxies für Titel + Hauptbild
-export async function fetchPreview(url: string): Promise<{ title: string; imageUrl: string | null; images?: string[] } | null> {
+// Schnelle Vorschau via CORS-Proxies (nur Titel + Hauptbild)
+// Hintergrund-Anreicherung mit allen Bildern + Preis via updateItemPrice()
+export async function fetchPreview(url: string): Promise<{ title: string; imageUrl: string | null } | null> {
   const cleanUrl = await cleanAmazonUrl(url);
-  const isAmazon = isAmazonUrl(cleanUrl);
 
-  // 1) Brightdata Web Unblocker (volle HTML-Seite → alle Bilder + Preis)
-  if (isAmazon) {
-    const bright = await scrapeAmazonProduct(cleanUrl);
-    if (bright) {
-      return {
-        title: bright.title,
-        imageUrl: bright.imageUrl,
-        images: proxyImages(bright.images),
-      };
-    }
-  }
-
-  // 2) CORS-Proxies (nur Titel + Hauptbild)
   const direct = await tryFetch(cleanUrl);
   if (direct) return { title: direct.title, imageUrl: direct.imageUrl };
 

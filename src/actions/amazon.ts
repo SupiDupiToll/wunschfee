@@ -22,7 +22,6 @@ export async function fetchProductData(url: string) {
   return {
     title: preview.title,
     imageUrl: proxyImageUrl(preview.imageUrl),
-    images: preview.images || [],
     store,
   };
 }

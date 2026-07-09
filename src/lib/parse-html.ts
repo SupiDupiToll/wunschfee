@@ -122,41 +122,43 @@ function parseTitle(html: string): string {
     || "";
 }
 
-/** Extrahiert NUR echte Produktbilder in HOCHAUFLÖSUNG */
+// Nur echte Produktbild-URLs von Amazon (keine Icons/Badges/Empfehlungen)
+function isProductImage(url: string): boolean {
+  return /\/images\/[ID]\//.test(url) && /\.(jpg|png|webp)(\?|$)/i.test(url);
+}
+
+/** Extrahiert NUR echte Produktbilder in HOCHAUFLÖSUNG (keine Icons/Badges) */
 function parseImages(html: string): string[] {
-  const $ = cheerio.load(html);
   const images: string[] = [];
 
-  // 1) JSON-LD (beste Qualität, meist Array)
+  // 1) JSON-LD structured data (product.image) – sauberste Quelle
   images.push(...parseJsonLdImages(html));
 
-  // 2) #altImages → data-a-hires (volle Auflösung)
+  // 2) #altImages → data-a-hires (verschiedene Produktansichten)
+  const $ = cheerio.load(html);
   $("#altImages").find("[data-a-hires]").each((_, el) => {
     const src = $(el).attr("data-a-hires");
-    if (src) images.push(src);
+    if (src && isProductImage(src)) images.push(src);
   });
 
-  // 3) #landingImage – Hauptproduktbild
+  // 3) og:image meta tag (Fallback für Hauptbild)
+  const ogImage = $('meta[property="og:image"]').attr("content");
+  if (ogImage && isProductImage(ogImage)) images.push(ogImage);
+
+  // 4) #landingImage – Hauptproduktbild
   const landingSrc = $("#landingImage").attr("src") || $("#landingImage").attr("data-a-hires");
-  if (landingSrc) images.push(landingSrc);
+  if (landingSrc && isProductImage(landingSrc)) images.push(landingSrc);
 
-  // 4) #imgTagWrapperId > img
+  // 5) #imgTagWrapperId > img
   const wrapperImg = $("#imgTagWrapperId img").first().attr("src");
-  if (wrapperImg) images.push(wrapperImg);
+  if (wrapperImg && isProductImage(wrapperImg)) images.push(wrapperImg);
 
-  // 5) Alle Amazon-Produktbilder aus img[src] (fängt auch gestripptes HTML)
-  $("img[src*='m.media-amazon.com']").each((_, el) => {
-    const src = $(el).attr("src");
-    if (src) images.push(src);
-  });
-
-  // Filtern + Normalisieren + Deduplizieren
+  // Normalisieren + Deduplizieren
   const seen = new Map<string, string>();
   for (const url of images) {
-    if (!url.includes("m.media-amazon.com")) continue;
-    if (/\/images\/[SG]\//.test(url)) continue;
+    if (!isProductImage(url)) continue;
 
-    // Größen-Suffix entfernen → Amazon liefert dann volle Auflösung
+    // Größen-Suffix entfernen → Amazon liefert volle Auflösung
     const highRes = url.replace(/\._[A-Z]{2}\d+(?:,\d+)?_[^/]*\.(jpg|png|webp)$/i, ".$1");
 
     if (!seen.has(highRes)) {
