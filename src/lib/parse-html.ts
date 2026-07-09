@@ -122,41 +122,40 @@ function parseTitle(html: string): string {
     || "";
 }
 
-/** Extrahiert NUR echte Produktbilder (keine Icons, Empfehlungen etc.) */
+/** Extrahiert NUR echte Produktbilder in HOCHAUFLÖSUNG (keine Icons/Thumbnails) */
 function parseImages(html: string): string[] {
   const $ = cheerio.load(html);
   const images: string[] = [];
 
-  // 1) JSON-LD structured data (product.image)
+  // 1) JSON-LD structured data (product.image) – beste Qualität
   const jsonld = parseJsonLdImages(html);
   images.push(...jsonld);
 
-  // 2) #altImages – Amazons Thumbnail-Strip (verschiedene Produktansichten)
-  $("#altImages").find("img, [data-a-hires]").each((_, el) => {
-    const $el = $(el);
-    const src = $el.attr("data-a-hires") || $el.attr("src");
-    if (src && src.includes("m.media-amazon.com") && /\.(jpg|png|webp)/i.test(src)) {
-      images.push(src);
+  // 2) #altImages – NUR data-a-hires (hochauflösend), NICHT img[src] (Thumbnails)
+  $("#altImages").find("[data-a-hires]").each((_, el) => {
+    const src = $(el).attr("data-a-hires");
+    if (src && src.includes("m.media-amazon.com")) {
+      // High-Res von Größen-Suffix befreien
+      images.push(src.replace(/\._([A-Z]{2}\d+(?:,\d+)?_)\./i, "."));
     }
   });
 
-  // 3) #landingImage – Hauptproduktbild
-  const landingSrc = $("#landingImage").attr("src");
-  if (landingSrc) images.push(landingSrc);
+  // 3) #landingImage – Hauptproduktbild (voller Auflösung)
+  const landingSrc = $("#landingImage").attr("src") || $("#landingImage").attr("data-a-hires");
+  if (landingSrc && landingSrc.includes("m.media-amazon.com")) {
+    images.push(landingSrc);
+  }
 
   // 4) #imgTagWrapperId > img – Fallback für Hauptbild
   const wrapperImg = $("#imgTagWrapperId img").first().attr("src");
-  if (wrapperImg) images.push(wrapperImg);
+  if (wrapperImg && wrapperImg.includes("m.media-amazon.com")) {
+    images.push(wrapperImg);
+  }
 
-  // Deduplizieren: gleiches Bild trotz Größen-Suffix
+  // Deduplizieren: Basis-URL ohne Größen-Suffix vergleichen
   const seen = new Map<string, string>();
   for (const url of images) {
-    const normalized = url
-      .replace(/\._AC_.*?\.(jpg|png|webp)$/i, ".$1")
-      .replace(/\._SL\d+_\.(jpg|png|webp)$/i, ".$1")
-      .replace(/\._SX\d+_\.(jpg|png|webp)$/i, ".$1")
-      .replace(/\._SY\d+_\.(jpg|png|webp)$/i, ".$1")
-      .replace(/\._UX\d+_\.(jpg|png|webp)$/i, ".$1");
+    const normalized = url.replace(/\._([A-Z]{2}\d+(?:,\d+)?_)[^./]*\.(jpg|png|webp)$/i, ".$2");
 
     if (!seen.has(normalized)) {
       seen.set(normalized, url);
