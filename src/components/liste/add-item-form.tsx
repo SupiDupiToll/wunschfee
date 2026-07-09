@@ -1,14 +1,13 @@
 "use client";
 
 import { useActionState, useState, useRef } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { addItem } from "@/actions/item";
-import { fetchProductData, updateItemPrice } from "@/actions/amazon";
+import { fetchProductData } from "@/actions/amazon";
 import { ImageOff } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -24,7 +23,6 @@ interface PreviewData {
 }
 
 export function AddItemForm({ listId }: AddItemFormProps) {
-  const router = useRouter();
   const [url, setUrl] = useState("");
   const [preview, setPreview] = useState<PreviewData | null>(null);
   const [fetching, setFetching] = useState(false);
@@ -82,20 +80,8 @@ export function AddItemForm({ listId }: AddItemFormProps) {
       return result;
     }
 
-    // Preis im Hintergrund per Brightdata fetchen
-    if (url) {
-      updateItemPrice(result.id, url)
-        .then(() => router.refresh())
-        .catch(() => {});
-    }
-
     toast.success("Geschenk hinzugefügt!");
-    setUrl("");
-    setPreview(null);
-    setFetchError(false);
-    setManualTitle("");
-    setManualImage("");
-    setManualPrice("");
+    window.location.href = window.location.href;
     return null;
   }
 

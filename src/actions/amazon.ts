@@ -26,12 +26,12 @@ export async function fetchProductData(url: string) {
   };
 }
 
-export async function updateItemPrice(itemId: string, url: string) {
+export async function updateItemPrice(itemId: string, url: string): Promise<boolean> {
   const price = await fetchPrice(url);
-  if (!price) return;
+  if (!price) return false;
 
   const item = await db.giftItem.findUnique({ where: { id: itemId } });
-  if (!item) return;
+  if (!item) return false;
 
   await db.giftItem.update({
     where: { id: itemId },
@@ -43,4 +43,6 @@ export async function updateItemPrice(itemId: string, url: string) {
     revalidatePath(`/liste/${list.slug}`);
     revalidatePath(`/liste/${list.slug}/verwalten`);
   }
+
+  return true;
 }

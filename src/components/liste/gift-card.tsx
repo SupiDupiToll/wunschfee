@@ -20,6 +20,7 @@ import { useState, useEffect } from "react";
 import { ReserveModal } from "./reserve-modal";
 import { EditItemModal } from "./edit-item-modal";
 import { deleteItem } from "@/actions/item";
+import { updateItemPrice } from "@/actions/amazon";
 import { addAffiliateTag } from "@/lib/amazon";
 import { toast } from "sonner";
 import type { GiftItem, GiftList } from "@/db/schema";
@@ -59,10 +60,22 @@ export function GiftCard({ item, list, isOwner }: GiftCardProps) {
   const [reservedByMe, setReservedByMe] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [deleted, setDeleted] = useState(false);
+  const [priceChecked, setPriceChecked] = useState(false);
 
   useEffect(() => {
     setReservedByMe(getMyReservedIds().has(item.id));
   }, [item.id]);
+
+  useEffect(() => {
+    if (!item.price && !priceChecked) {
+      setPriceChecked(true);
+      updateItemPrice(item.id, item.url)
+        .then((updated) => {
+          if (updated) window.location.href = window.location.href;
+        })
+        .catch(() => {});
+    }
+  }, [item.price, priceChecked]);
 
   async function handleDelete() {
     await deleteItem(item.id);
@@ -155,12 +168,12 @@ export function GiftCard({ item, list, isOwner }: GiftCardProps) {
                 <p className="mt-1 text-sm font-semibold text-primary">
                   {item.price}
                 </p>
-              ) : (
+              ) : !priceChecked ? (
                 <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
                   <Loader className="h-3 w-3 animate-spin" />
                   Preis wird ermittelt…
                 </p>
-              )}
+              ) : null}
               {item.store && (
                 <Badge variant="secondary" className="mt-1 text-xs">
                   {item.store}
