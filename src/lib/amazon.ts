@@ -1,3 +1,5 @@
+import { scrapeAmazonProduct } from "./brightdata";
+
 const CORS_PROXIES = [
   (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
   (url: string) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
@@ -244,14 +246,28 @@ async function tryFetch(url: string, proxy?: (url: string) => string): Promise<S
   }
 }
 
+function isAmazonUrl(url: string): boolean {
+  try {
+    return new URL(url).hostname.toLowerCase().includes("amazon");
+  } catch {
+    return false;
+  }
+}
+
 export async function scrapeProductData(url: string): Promise<ScrapedData | null> {
   const cleanUrl = cleanAmazonUrl(url);
 
-  // 1) Direkter Fetch
+  if (isAmazonUrl(url)) {
+    // 1) BrightData Amazon Scraper API (strukturiertes JSON)
+    const product = await scrapeAmazonProduct(cleanUrl);
+    if (product) return product;
+  }
+
+  // 2) Direkter Fetch (HTML parsen)
   const direct = await tryFetch(cleanUrl);
   if (direct) return direct;
 
-  // 2) CORS-Proxies als Fallback
+  // 3) CORS-Proxies als Fallback
   for (const proxy of CORS_PROXIES) {
     const result = await tryFetch(cleanUrl, proxy);
     if (result) return result;
