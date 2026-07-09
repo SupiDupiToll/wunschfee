@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { addItem } from "@/actions/item";
 import { fetchProductData, updateItemPrice } from "@/actions/amazon";
-import { Plus, Loader2, ImageOff } from "lucide-react";
+import { ImageOff } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
 
@@ -178,7 +178,7 @@ export function AddItemForm({ listId }: AddItemFormProps) {
 
           <Button
             type="submit"
-            className="w-full gap-2"
+            className="w-full"
             disabled={
               pending ||
               !url ||
@@ -187,15 +187,10 @@ export function AddItemForm({ listId }: AddItemFormProps) {
                 preview === null)
             }
           >
-            {pending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Plus className="h-4 w-4" />
-            )}
             {fetching
-              ? "Erkenne Produkt..."
+              ? "Erkenne Produkt…"
               : pending
-                ? "Wird hinzugefügt..."
+                ? "Wird hinzugefügt…"
                 : "Geschenk hinzufügen"}
           </Button>
         </form>

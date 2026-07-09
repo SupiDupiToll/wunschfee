@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { ShoppingCart, Gift, Lock, Trash2, Pencil } from "lucide-react";
+import { ShoppingCart, Gift, Lock, Trash2, Pencil, Loader } from "lucide-react";
 import { useState, useEffect } from "react";
 import { ReserveModal } from "./reserve-modal";
 import { EditItemModal } from "./edit-item-modal";
@@ -151,9 +151,14 @@ export function GiftCard({ item, list, isOwner }: GiftCardProps) {
               <h3 className="line-clamp-2 font-medium leading-tight">
                 {item.title}
               </h3>
-              {item.price && (
+              {item.price ? (
                 <p className="mt-1 text-sm font-semibold text-primary">
                   {item.price}
+                </p>
+              ) : (
+                <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                  <Loader className="h-3 w-3 animate-spin" />
+                  Preis wird ermittelt…
                 </p>
               )}
               {item.store && (
