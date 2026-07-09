@@ -1,3 +1,5 @@
+import * as cheerio from "cheerio";
+
 export interface ScrapedData {
   title: string;
   imageUrl: string | null;
@@ -121,33 +123,62 @@ function parseTitle(html: string): string {
 }
 
 function parseImages(html: string): string[] {
+  const $ = cheerio.load(html);
   const images: string[] = [];
 
-  const ogMatch = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/);
-  if (ogMatch?.[1]) images.push(ogMatch[1]);
+  // 1) og:image meta tag
+  const ogImage = $('meta[property="og:image"]').attr("content");
+  if (ogImage) images.push(ogImage);
 
-  const landingMatch = html.match(/id="landingImage"[^>]+src="([^"]+)"/);
-  if (landingMatch?.[1]) images.push(landingMatch[1]);
+  // 2) #landingImage
+  const landingSrc = $("#landingImage").attr("src");
+  if (landingSrc) images.push(landingSrc);
 
-  const wrapperMatch = html.match(/id="imgTagWrapperId"[^>]*>\s*<img[^>]+src="([^"]+)"/);
-  if (wrapperMatch?.[1]) images.push(wrapperMatch[1]);
+  // 3) #imgTagWrapperId > img
+  const wrapperImg = $("#imgTagWrapperId img").first().attr("src");
+  if (wrapperImg) images.push(wrapperImg);
 
-  const altRegex = /id="altImages"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>\s*<\/div>/i;
-  const altMatch = html.match(altRegex);
-  if (altMatch) {
-    const srcRegex = /(?:data-a-hires|src)="([^"]*m\.media-amazon\.com[^"]*\.jpg[^"]*)"/gi;
-    let sm;
-    while ((sm = srcRegex.exec(altMatch[1])) !== null) {
-      if (sm[1]) images.push(sm[1]);
+  // 4) #altImages thumbnails (Amazon's thumbnail strip)
+  //    These are the alternate product views
+  $("#altImages").find("img, [data-a-hires]").each((_, el) => {
+    const $el = $(el);
+    const src = $el.attr("data-a-hires") || $el.attr("src");
+    if (src && src.includes("m.media-amazon.com")) {
+      images.push(src);
+    }
+  });
+
+  // 5) Broad fallback: any img with Amazon CDN in the page
+  //    Captures images that might be outside #altImages
+  $("img[src*='m.media-amazon.com']").each((_, el) => {
+    const src = $(el).attr("src");
+    if (src) images.push(src);
+  });
+
+  // 6) Also check data-a-hires attributes anywhere in the page
+  $("[data-a-hires*='m.media-amazon.com']").each((_, el) => {
+    const src = $(el).attr("data-a-hires");
+    if (src) images.push(src);
+  });
+
+  // Deduplicate: group by the base image ID (strip size variant)
+  const seen = new Map<string, string>();
+  for (const url of images) {
+    // Normalize Amazon image URLs like:
+    // .../I/61ABC._AC_SL1500_.jpg  →  .../I/61ABC.jpg
+    const normalized = url
+      .replace(/\._AC_.*?\.jpg$/i, ".jpg")
+      .replace(/\._SL\d+_\.jpg$/i, ".jpg")
+      .replace(/\._SY\d+_\.jpg$/i, ".jpg")
+      .replace(/\._UX\d+_\.jpg$/i, ".jpg")
+      .replace(/\._SX\d+_\.jpg$/i, ".jpg");
+
+    if (!seen.has(normalized)) {
+      seen.set(normalized, url);
     }
   }
 
-  const seen = new Set<string>();
-  return images.filter((url) => {
-    if (seen.has(url)) return false;
-    seen.add(url);
-    return true;
-  });
+  return [...seen.values()];
 }
 
 function formatPrice(price: string): string {

@@ -30,7 +30,7 @@ interface GiftCardProps {
   isOwner: boolean;
 }
 
-export function GiftCard({ item, list, isOwner }: GiftCardProps) {
+export function GiftCard({ item, list: _list, isOwner }: GiftCardProps) {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [imageError, setImageError] = useState(false);
