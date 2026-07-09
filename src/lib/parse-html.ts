@@ -127,31 +127,41 @@ function isProductImage(url: string): boolean {
   return /\/images\/[ID]\//.test(url) && /\.(jpg|png|webp)(\?|$)/i.test(url);
 }
 
-/** Extrahiert NUR echte Produktbilder in HOCHAUFLÖSUNG (keine Icons/Badges) */
+/** Extrahiert NUR echte Produktbilder via Regex (robuster als DOM-Parsing) */
 function parseImages(html: string): string[] {
   const images: string[] = [];
 
-  // 1) JSON-LD structured data (product.image) – sauberste Quelle
+  // 1) JSON-LD structured data
   images.push(...parseJsonLdImages(html));
 
-  // 2) #altImages → data-a-hires (verschiedene Produktansichten)
-  const $ = cheerio.load(html);
-  $("#altImages").find("[data-a-hires]").each((_, el) => {
-    const src = $(el).attr("data-a-hires");
-    if (src && isProductImage(src)) images.push(src);
-  });
+  // 2) Alle data-a-hires-Attribute (Amazon's High-Res-Thumbnails)
+  const hiresRegex = /data-a-hires="([^"]+)"/g;
+  let m;
+  while ((m = hiresRegex.exec(html)) !== null) {
+    if (isProductImage(m[1])) images.push(m[1]);
+  }
 
-  // 3) og:image meta tag (Fallback für Hauptbild)
-  const ogImage = $('meta[property="og:image"]').attr("content");
-  if (ogImage && isProductImage(ogImage)) images.push(ogImage);
+  // 3) og:image meta tag
+  const ogMatch = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/);
+  if (ogMatch && isProductImage(ogMatch[1])) images.push(ogMatch[1]);
 
   // 4) #landingImage – Hauptproduktbild
-  const landingSrc = $("#landingImage").attr("src") || $("#landingImage").attr("data-a-hires");
-  if (landingSrc && isProductImage(landingSrc)) images.push(landingSrc);
+  const landingMatch = html.match(/id="landingImage"[^>]+src="([^"]+)"/);
+  if (landingMatch && isProductImage(landingMatch[1])) images.push(landingMatch[1]);
 
   // 5) #imgTagWrapperId > img
-  const wrapperImg = $("#imgTagWrapperId img").first().attr("src");
-  if (wrapperImg && isProductImage(wrapperImg)) images.push(wrapperImg);
+  const wrapperMatch = html.match(/id="imgTagWrapperId"[^>]*>\s*<img[^>]+src="([^"]+)"/);
+  if (wrapperMatch && isProductImage(wrapperMatch[1])) images.push(wrapperMatch[1]);
+
+  // 6) Alle img[src] innerhalb von #altImages (Thumbnails → Normalisierung macht High-Res draus)
+  const altSection = html.match(/id="altImages"[\s\S]{0,5000}/i);
+  if (altSection) {
+    const imgRegex = /<img[^>]+src="([^"]+)"/g;
+    let im;
+    while ((im = imgRegex.exec(altSection[0])) !== null) {
+      if (isProductImage(im[1])) images.push(im[1]);
+    }
+  }
 
   // Normalisieren + Deduplizieren
   const seen = new Map<string, string>();
