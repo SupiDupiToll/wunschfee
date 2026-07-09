@@ -122,43 +122,45 @@ function parseTitle(html: string): string {
     || "";
 }
 
-/** Extrahiert NUR echte Produktbilder in HOCHAUFLÖSUNG (keine Icons/Thumbnails) */
+/** Extrahiert NUR echte Produktbilder in HOCHAUFLÖSUNG */
 function parseImages(html: string): string[] {
   const $ = cheerio.load(html);
   const images: string[] = [];
 
-  // 1) JSON-LD structured data (product.image) – beste Qualität
-  const jsonld = parseJsonLdImages(html);
-  images.push(...jsonld);
+  // 1) JSON-LD (beste Qualität, meist Array)
+  images.push(...parseJsonLdImages(html));
 
-  // 2) #altImages – NUR data-a-hires (hochauflösend), NICHT img[src] (Thumbnails)
+  // 2) #altImages → data-a-hires (volle Auflösung)
   $("#altImages").find("[data-a-hires]").each((_, el) => {
     const src = $(el).attr("data-a-hires");
-    if (src && src.includes("m.media-amazon.com")) {
-      // High-Res von Größen-Suffix befreien
-      images.push(src.replace(/\._([A-Z]{2}\d+(?:,\d+)?_)\./i, "."));
-    }
+    if (src) images.push(src);
   });
 
-  // 3) #landingImage – Hauptproduktbild (voller Auflösung)
+  // 3) #landingImage – Hauptproduktbild
   const landingSrc = $("#landingImage").attr("src") || $("#landingImage").attr("data-a-hires");
-  if (landingSrc && landingSrc.includes("m.media-amazon.com")) {
-    images.push(landingSrc);
-  }
+  if (landingSrc) images.push(landingSrc);
 
-  // 4) #imgTagWrapperId > img – Fallback für Hauptbild
+  // 4) #imgTagWrapperId > img
   const wrapperImg = $("#imgTagWrapperId img").first().attr("src");
-  if (wrapperImg && wrapperImg.includes("m.media-amazon.com")) {
-    images.push(wrapperImg);
-  }
+  if (wrapperImg) images.push(wrapperImg);
 
-  // Deduplizieren: Basis-URL ohne Größen-Suffix vergleichen
+  // 5) Alle Amazon-Produktbilder aus img[src] (fängt auch gestripptes HTML)
+  $("img[src*='m.media-amazon.com']").each((_, el) => {
+    const src = $(el).attr("src");
+    if (src) images.push(src);
+  });
+
+  // Filtern + Normalisieren + Deduplizieren
   const seen = new Map<string, string>();
   for (const url of images) {
-    const normalized = url.replace(/\._([A-Z]{2}\d+(?:,\d+)?_)[^./]*\.(jpg|png|webp)$/i, ".$2");
+    if (!url.includes("m.media-amazon.com")) continue;
+    if (/\/images\/[SG]\//.test(url)) continue;
 
-    if (!seen.has(normalized)) {
-      seen.set(normalized, url);
+    // Größen-Suffix entfernen → Amazon liefert dann volle Auflösung
+    const highRes = url.replace(/\._[A-Z]{2}\d+(?:,\d+)?_[^/]*\.(jpg|png|webp)$/i, ".$1");
+
+    if (!seen.has(highRes)) {
+      seen.set(highRes, highRes);
     }
   }
 

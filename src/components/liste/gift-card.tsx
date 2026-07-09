@@ -37,14 +37,14 @@ export function GiftCard({ item, list: _list, isOwner }: GiftCardProps) {
   const [deleted, setDeleted] = useState(false);
 
   useEffect(() => {
-    if (!item.price) {
+    if (!item.price || !item.images) {
       updateItemPrice(item.id, item.url)
         .then((updated) => {
           if (updated) window.location.href = window.location.href;
         })
         .catch(() => {});
     }
-  }, [item.price, item.id, item.url]);
+  }, [item.price, item.images, item.id, item.url]);
 
   async function handleDelete() {
     await deleteItem(item.id);
