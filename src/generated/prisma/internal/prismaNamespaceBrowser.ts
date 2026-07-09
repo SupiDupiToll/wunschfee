@@ -97,6 +97,7 @@ export const GiftItemScalarFieldEnum = {
   title: 'title',
   url: 'url',
   imageUrl: 'imageUrl',
+  images: 'images',
   price: 'price',
   asin: 'asin',
   store: 'store',

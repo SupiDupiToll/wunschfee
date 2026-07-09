@@ -1,6 +1,7 @@
 export interface ScrapedData {
   title: string;
   imageUrl: string | null;
+  images: string[];
   price: string | null;
 }
 
@@ -28,7 +29,7 @@ function parseJsonLdPrice(html: string): string | null {
   return null;
 }
 
-function parseJsonLdImage(html: string): string | null {
+function parseJsonLdImages(html: string): string[] {
   const regex = /<script[^>]+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g;
   let match;
   while ((match = regex.exec(html)) !== null) {
@@ -38,12 +39,18 @@ function parseJsonLdImage(html: string): string | null {
         ? [parsed]
         : parsed["@graph"]?.filter((i: Record<string, unknown>) => i["@type"] === "Product") || [];
       for (const product of candidates) {
-        if (product.image) return typeof product.image === "string" ? product.image : null;
+        const image = product.image;
+        if (Array.isArray(image)) {
+          return image.filter((u: unknown) => typeof u === "string" && u.startsWith("http"));
+        }
+        if (typeof image === "string") {
+          return [image];
+        }
       }
     } catch {
     }
   }
-  return null;
+  return [];
 }
 
 function isInstallmentPrice(text: string): boolean {
@@ -113,11 +120,34 @@ function parseTitle(html: string): string {
     || "";
 }
 
-function parseImage(html: string): string | null {
-  return html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/)?.[1]
-    || html.match(/id="landingImage"[^>]+src="([^"]+)"/)?.[1]
-    || html.match(/id="imgTagWrapperId"[^>]*>\s*<img[^>]+src="([^"]+)"/)?.[1]
-    || null;
+function parseImages(html: string): string[] {
+  const images: string[] = [];
+
+  const ogMatch = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/);
+  if (ogMatch?.[1]) images.push(ogMatch[1]);
+
+  const landingMatch = html.match(/id="landingImage"[^>]+src="([^"]+)"/);
+  if (landingMatch?.[1]) images.push(landingMatch[1]);
+
+  const wrapperMatch = html.match(/id="imgTagWrapperId"[^>]*>\s*<img[^>]+src="([^"]+)"/);
+  if (wrapperMatch?.[1]) images.push(wrapperMatch[1]);
+
+  const altRegex = /id="altImages"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>\s*<\/div>/i;
+  const altMatch = html.match(altRegex);
+  if (altMatch) {
+    const srcRegex = /(?:data-a-hires|src)="([^"]*m\.media-amazon\.com[^"]*\.jpg[^"]*)"/gi;
+    let sm;
+    while ((sm = srcRegex.exec(altMatch[1])) !== null) {
+      if (sm[1]) images.push(sm[1]);
+    }
+  }
+
+  const seen = new Set<string>();
+  return images.filter((url) => {
+    if (seen.has(url)) return false;
+    seen.add(url);
+    return true;
+  });
 }
 
 function formatPrice(price: string): string {
@@ -134,7 +164,12 @@ export function parseHtml(html: string): ScrapedData | null {
   const cleanTitle = title.replace(/ : [A-Za-z0-9.-]+\.[a-z]+: .+$/, "").trim();
 
   const jsonldPrice = parseJsonLdPrice(html);
-  const imageUrl = parseJsonLdImage(html) || parseImage(html);
+  const jsonldImages = parseJsonLdImages(html);
+  const htmlImages = parseImages(html);
+
+  const allImages = [...new Set([...jsonldImages, ...htmlImages])];
+
+  const imageUrl = allImages.length > 0 ? allImages[0] : null;
 
   const price = jsonldPrice
     || parsePriceFromMeta(html)
@@ -146,6 +181,7 @@ export function parseHtml(html: string): ScrapedData | null {
   return {
     title: cleanTitle.slice(0, 500),
     imageUrl,
+    images: allImages,
     price: formattedPrice,
   };
 }

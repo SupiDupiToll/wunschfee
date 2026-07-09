@@ -40,6 +40,7 @@ export type GiftItemMinAggregateOutputType = {
   title: string | null
   url: string | null
   imageUrl: string | null
+  images: string | null
   price: string | null
   asin: string | null
   store: string | null
@@ -56,6 +57,7 @@ export type GiftItemMaxAggregateOutputType = {
   title: string | null
   url: string | null
   imageUrl: string | null
+  images: string | null
   price: string | null
   asin: string | null
   store: string | null
@@ -72,6 +74,7 @@ export type GiftItemCountAggregateOutputType = {
   title: number
   url: number
   imageUrl: number
+  images: number
   price: number
   asin: number
   store: number
@@ -98,6 +101,7 @@ export type GiftItemMinAggregateInputType = {
   title?: true
   url?: true
   imageUrl?: true
+  images?: true
   price?: true
   asin?: true
   store?: true
@@ -114,6 +118,7 @@ export type GiftItemMaxAggregateInputType = {
   title?: true
   url?: true
   imageUrl?: true
+  images?: true
   price?: true
   asin?: true
   store?: true
@@ -130,6 +135,7 @@ export type GiftItemCountAggregateInputType = {
   title?: true
   url?: true
   imageUrl?: true
+  images?: true
   price?: true
   asin?: true
   store?: true
@@ -233,6 +239,7 @@ export type GiftItemGroupByOutputType = {
   title: string
   url: string
   imageUrl: string | null
+  images: string | null
   price: string | null
   asin: string | null
   store: string | null
@@ -272,6 +279,7 @@ export type GiftItemWhereInput = {
   title?: Prisma.StringFilter<"GiftItem"> | string
   url?: Prisma.StringFilter<"GiftItem"> | string
   imageUrl?: Prisma.StringNullableFilter<"GiftItem"> | string | null
+  images?: Prisma.StringNullableFilter<"GiftItem"> | string | null
   price?: Prisma.StringNullableFilter<"GiftItem"> | string | null
   asin?: Prisma.StringNullableFilter<"GiftItem"> | string | null
   store?: Prisma.StringNullableFilter<"GiftItem"> | string | null
@@ -289,6 +297,7 @@ export type GiftItemOrderByWithRelationInput = {
   title?: Prisma.SortOrder
   url?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrderInput | Prisma.SortOrder
   asin?: Prisma.SortOrderInput | Prisma.SortOrder
   store?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -309,6 +318,7 @@ export type GiftItemWhereUniqueInput = Prisma.AtLeast<{
   title?: Prisma.StringFilter<"GiftItem"> | string
   url?: Prisma.StringFilter<"GiftItem"> | string
   imageUrl?: Prisma.StringNullableFilter<"GiftItem"> | string | null
+  images?: Prisma.StringNullableFilter<"GiftItem"> | string | null
   price?: Prisma.StringNullableFilter<"GiftItem"> | string | null
   asin?: Prisma.StringNullableFilter<"GiftItem"> | string | null
   store?: Prisma.StringNullableFilter<"GiftItem"> | string | null
@@ -326,6 +336,7 @@ export type GiftItemOrderByWithAggregationInput = {
   title?: Prisma.SortOrder
   url?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  images?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrderInput | Prisma.SortOrder
   asin?: Prisma.SortOrderInput | Prisma.SortOrder
   store?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -350,6 +361,7 @@ export type GiftItemScalarWhereWithAggregatesInput = {
   title?: Prisma.StringWithAggregatesFilter<"GiftItem"> | string
   url?: Prisma.StringWithAggregatesFilter<"GiftItem"> | string
   imageUrl?: Prisma.StringNullableWithAggregatesFilter<"GiftItem"> | string | null
+  images?: Prisma.StringNullableWithAggregatesFilter<"GiftItem"> | string | null
   price?: Prisma.StringNullableWithAggregatesFilter<"GiftItem"> | string | null
   asin?: Prisma.StringNullableWithAggregatesFilter<"GiftItem"> | string | null
   store?: Prisma.StringNullableWithAggregatesFilter<"GiftItem"> | string | null
@@ -365,6 +377,7 @@ export type GiftItemCreateInput = {
   title: string
   url: string
   imageUrl?: string | null
+  images?: string | null
   price?: string | null
   asin?: string | null
   store?: string | null
@@ -382,6 +395,7 @@ export type GiftItemUncheckedCreateInput = {
   title: string
   url: string
   imageUrl?: string | null
+  images?: string | null
   price?: string | null
   asin?: string | null
   store?: string | null
@@ -397,6 +411,7 @@ export type GiftItemUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   asin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   store?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -414,6 +429,7 @@ export type GiftItemUncheckedUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   asin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   store?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -430,6 +446,7 @@ export type GiftItemCreateManyInput = {
   title: string
   url: string
   imageUrl?: string | null
+  images?: string | null
   price?: string | null
   asin?: string | null
   store?: string | null
@@ -445,6 +462,7 @@ export type GiftItemUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   asin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   store?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -461,6 +479,7 @@ export type GiftItemUncheckedUpdateManyInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   asin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   store?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -487,6 +506,7 @@ export type GiftItemCountOrderByAggregateInput = {
   title?: Prisma.SortOrder
   url?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  images?: Prisma.SortOrder
   price?: Prisma.SortOrder
   asin?: Prisma.SortOrder
   store?: Prisma.SortOrder
@@ -507,6 +527,7 @@ export type GiftItemMaxOrderByAggregateInput = {
   title?: Prisma.SortOrder
   url?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  images?: Prisma.SortOrder
   price?: Prisma.SortOrder
   asin?: Prisma.SortOrder
   store?: Prisma.SortOrder
@@ -523,6 +544,7 @@ export type GiftItemMinOrderByAggregateInput = {
   title?: Prisma.SortOrder
   url?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
+  images?: Prisma.SortOrder
   price?: Prisma.SortOrder
   asin?: Prisma.SortOrder
   store?: Prisma.SortOrder
@@ -592,6 +614,7 @@ export type GiftItemCreateWithoutListInput = {
   title: string
   url: string
   imageUrl?: string | null
+  images?: string | null
   price?: string | null
   asin?: string | null
   store?: string | null
@@ -607,6 +630,7 @@ export type GiftItemUncheckedCreateWithoutListInput = {
   title: string
   url: string
   imageUrl?: string | null
+  images?: string | null
   price?: string | null
   asin?: string | null
   store?: string | null
@@ -652,6 +676,7 @@ export type GiftItemScalarWhereInput = {
   title?: Prisma.StringFilter<"GiftItem"> | string
   url?: Prisma.StringFilter<"GiftItem"> | string
   imageUrl?: Prisma.StringNullableFilter<"GiftItem"> | string | null
+  images?: Prisma.StringNullableFilter<"GiftItem"> | string | null
   price?: Prisma.StringNullableFilter<"GiftItem"> | string | null
   asin?: Prisma.StringNullableFilter<"GiftItem"> | string | null
   store?: Prisma.StringNullableFilter<"GiftItem"> | string | null
@@ -667,6 +692,7 @@ export type GiftItemCreateManyListInput = {
   title: string
   url: string
   imageUrl?: string | null
+  images?: string | null
   price?: string | null
   asin?: string | null
   store?: string | null
@@ -682,6 +708,7 @@ export type GiftItemUpdateWithoutListInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   asin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   store?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -697,6 +724,7 @@ export type GiftItemUncheckedUpdateWithoutListInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   asin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   store?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -712,6 +740,7 @@ export type GiftItemUncheckedUpdateManyWithoutListInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  images?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   asin?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   store?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -730,6 +759,7 @@ export type GiftItemSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   title?: boolean
   url?: boolean
   imageUrl?: boolean
+  images?: boolean
   price?: boolean
   asin?: boolean
   store?: boolean
@@ -747,6 +777,7 @@ export type GiftItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   title?: boolean
   url?: boolean
   imageUrl?: boolean
+  images?: boolean
   price?: boolean
   asin?: boolean
   store?: boolean
@@ -764,6 +795,7 @@ export type GiftItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   title?: boolean
   url?: boolean
   imageUrl?: boolean
+  images?: boolean
   price?: boolean
   asin?: boolean
   store?: boolean
@@ -781,6 +813,7 @@ export type GiftItemSelectScalar = {
   title?: boolean
   url?: boolean
   imageUrl?: boolean
+  images?: boolean
   price?: boolean
   asin?: boolean
   store?: boolean
@@ -791,7 +824,7 @@ export type GiftItemSelectScalar = {
   createdAt?: boolean
 }
 
-export type GiftItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "listId" | "title" | "url" | "imageUrl" | "price" | "asin" | "store" | "sortOrder" | "isReserved" | "reservedBy" | "reservedAt" | "createdAt", ExtArgs["result"]["giftItem"]>
+export type GiftItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "listId" | "title" | "url" | "imageUrl" | "images" | "price" | "asin" | "store" | "sortOrder" | "isReserved" | "reservedBy" | "reservedAt" | "createdAt", ExtArgs["result"]["giftItem"]>
 export type GiftItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   list?: boolean | Prisma.GiftListDefaultArgs<ExtArgs>
 }
@@ -813,6 +846,7 @@ export type $GiftItemPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     title: string
     url: string
     imageUrl: string | null
+    images: string | null
     price: string | null
     asin: string | null
     store: string | null
@@ -1250,6 +1284,7 @@ export interface GiftItemFieldRefs {
   readonly title: Prisma.FieldRef<"GiftItem", 'String'>
   readonly url: Prisma.FieldRef<"GiftItem", 'String'>
   readonly imageUrl: Prisma.FieldRef<"GiftItem", 'String'>
+  readonly images: Prisma.FieldRef<"GiftItem", 'String'>
   readonly price: Prisma.FieldRef<"GiftItem", 'String'>
   readonly asin: Prisma.FieldRef<"GiftItem", 'String'>
   readonly store: Prisma.FieldRef<"GiftItem", 'String'>

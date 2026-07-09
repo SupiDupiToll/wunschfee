@@ -19,6 +19,7 @@ interface AddItemFormProps {
 interface PreviewData {
   title: string;
   imageUrl: string | null;
+  images: string[];
   store?: string;
 }
 
@@ -50,6 +51,7 @@ export function AddItemForm({ listId }: AddItemFormProps) {
         setPreview({
           title: result.title || "",
           imageUrl: result.imageUrl || null,
+          images: result.images || [],
           store: result.store,
         });
       }
@@ -71,6 +73,7 @@ export function AddItemForm({ listId }: AddItemFormProps) {
     } else if (preview) {
       formData.set("title", preview.title);
       formData.set("imageUrl", preview.imageUrl || "");
+      formData.set("images", JSON.stringify(preview.images));
       formData.set("price", "");
     }
 

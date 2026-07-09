@@ -27,6 +27,7 @@ export async function scrapeAmazonProduct(
 ): Promise<{
   title: string;
   imageUrl: string | null;
+  images: string[];
   price: string | null;
 } | null> {
   const token = getApiToken();

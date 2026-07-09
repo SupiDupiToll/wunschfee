@@ -26,6 +26,7 @@ export const addItemSchema = z.object({
   url: z.string().url("Bitte gib eine gültige URL ein").max(2000),
   title: z.string().min(1, "Titel darf nicht leer sein").max(500),
   imageUrl: z.string().url().optional().or(z.literal("")),
+  images: z.string().optional().or(z.literal("")),
   price: z.string().max(50).optional().or(z.literal("")),
 });
 

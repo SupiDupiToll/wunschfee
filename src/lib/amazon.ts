@@ -19,6 +19,10 @@ export function proxyImageUrl(url: string | null): string | null {
   return `https://external-content.duckduckgo.com/iu/?u=${encodeURIComponent(url)}`;
 }
 
+export function proxyImages(urls: string[]): string[] {
+  return urls.map((u) => proxyImageUrl(u)).filter((u): u is string => u !== null);
+}
+
 export function extractAsin(url: string): string | null {
   const patterns = [
     /(?:dp|product|gp\/product)\/([A-Z0-9]{10})/i,
@@ -54,26 +58,30 @@ export async function cleanAmazonUrl(url: string): Promise<string> {
   }
 }
 
-// Schnelle Vorschau: Titel + Bild über CORS-Proxies
-export async function fetchPreview(url: string): Promise<{ title: string; imageUrl: string | null } | null> {
+// Schnelle Vorschau: Titel + Bild(er) über CORS-Proxies
+export async function fetchPreview(url: string): Promise<{ title: string; imageUrl: string | null; images: string[] } | null> {
   const cleanUrl = await cleanAmazonUrl(url);
 
   const direct = await tryFetch(cleanUrl);
-  if (direct) return { title: direct.title, imageUrl: direct.imageUrl };
+  if (direct) return { title: direct.title, imageUrl: direct.imageUrl, images: direct.images };
 
   for (const proxy of CORS_PROXIES) {
     const result = await tryFetch(cleanUrl, proxy);
-    if (result) return { title: result.title, imageUrl: result.imageUrl };
+    if (result) return { title: result.title, imageUrl: result.imageUrl, images: result.images };
   }
 
   return null;
 }
 
 // Preis via Brightdata Web Unblocker
-export async function fetchPrice(url: string): Promise<string | null> {
+export async function fetchPrice(url: string): Promise<{ price: string | null; images: string[] } | null> {
   const cleanUrl = await cleanAmazonUrl(url);
   const product = await scrapeAmazonProduct(cleanUrl);
-  return product?.price ?? null;
+  if (!product) return null;
+  return {
+    price: product.price,
+    images: proxyImages(product.images),
+  };
 }
 
 export function addAffiliateTag(url: string): string {

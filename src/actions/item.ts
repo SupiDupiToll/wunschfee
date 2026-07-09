@@ -32,7 +32,8 @@ export async function addItem(
     return { error: "Bitte alle Felder ausfüllen" };
   }
 
-  let { listId, url, title, imageUrl, price } = parsed.data;
+  const { listId, title, imageUrl, images, price } = parsed.data;
+  let { url } = parsed.data;
 
   url = await cleanAmazonUrl(url);
 
@@ -59,6 +60,7 @@ export async function addItem(
       url,
       title,
       imageUrl: imageUrl || null,
+      images: images || null,
       price: price || null,
       sortOrder: (maxOrder?.sortOrder ?? 0) + 1,
     },
