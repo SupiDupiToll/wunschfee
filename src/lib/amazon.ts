@@ -20,11 +20,23 @@ export function extractAsin(url: string): string | null {
   return null;
 }
 
-export function cleanAmazonUrl(url: string): string {
+async function resolveAmznUrl(url: string): Promise<string> {
   try {
-    const asin = extractAsin(url);
+    const hostname = new URL(url).hostname.toLowerCase();
+    if (!hostname.includes("amzn")) return url;
+    const res = await fetch(url, { method: "HEAD", redirect: "follow" });
+    return res.url;
+  } catch {
+    return url;
+  }
+}
+
+export async function cleanAmazonUrl(url: string): Promise<string> {
+  try {
+    const resolved = await resolveAmznUrl(url);
+    const asin = extractAsin(resolved);
     if (asin) return `https://www.amazon.de/dp/${asin}`;
-    const u = new URL(url);
+    const u = new URL(resolved);
     return u.origin + u.pathname;
   } catch {
     return url;
@@ -40,7 +52,7 @@ export function addAffiliateTag(url: string): string {
   if (!tag) return url;
   try {
     const hostname = new URL(url).hostname.toLowerCase();
-    if (!hostname.includes("amazon")) return url;
+    if (!hostname.includes("amazon") && !hostname.includes("amzn")) return url;
     const separator = url.includes("?") ? "&" : "?";
     return `${url}${separator}tag=${encodeURIComponent(tag)}`;
   } catch {
@@ -52,7 +64,7 @@ export function detectStore(url: string): string {
   try {
     const hostname = new URL(url).hostname.toLowerCase();
     const stores: Record<string, string> = {
-      amazon: "Amazon", etsy: "Etsy", otto: "OTTO", zalando: "Zalando",
+      amazon: "Amazon", amzn: "Amazon", etsy: "Etsy", otto: "OTTO", zalando: "Zalando",
       mediamarkt: "MediaMarkt", saturn: "Saturn", ebay: "eBay",
       ikea: "IKEA", douglas: "Douglas", aboutyou: "About You",
     };
@@ -89,16 +101,17 @@ async function tryFetch(url: string, proxy?: (url: string) => string): Promise<S
 
 function isAmazonUrl(url: string): boolean {
   try {
-    return new URL(url).hostname.toLowerCase().includes("amazon");
+    const hostname = new URL(url).hostname.toLowerCase();
+    return hostname.includes("amazon") || hostname.includes("amzn");
   } catch {
     return false;
   }
 }
 
 export async function scrapeProductData(url: string): Promise<ScrapedData | null> {
-  const cleanUrl = cleanAmazonUrl(url);
+  const cleanUrl = await cleanAmazonUrl(url);
 
-  if (isAmazonUrl(url)) {
+  if (isAmazonUrl(cleanUrl)) {
     // 1) BrightData Web Unblocker (HTML via Proxy, geparst)
     const product = await scrapeAmazonProduct(cleanUrl);
     if (product) return product;

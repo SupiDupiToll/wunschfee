@@ -34,7 +34,7 @@ export async function addItem(
 
   let { listId, url, title, imageUrl, price } = parsed.data;
 
-  url = cleanAmazonUrl(url);
+  url = await cleanAmazonUrl(url);
 
   const list = await verifyOwner(listId);
 
