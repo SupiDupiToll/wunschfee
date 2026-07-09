@@ -1,4 +1,4 @@
-import { scrapeAmazonProduct, scrapeAmazonPrice } from "./brightdata";
+import { scrapeAmazonProduct } from "./brightdata";
 import { parseHtml, type ScrapedData } from "./parse-html";
 
 const CORS_PROXIES = [
@@ -69,10 +69,11 @@ export async function fetchPreview(url: string): Promise<{ title: string; imageU
   return null;
 }
 
-// Preis via Brightdata Dataset API (langsam, aber zuverlässig – für Hintergrund)
+// Preis via Brightdata Web Unblocker
 export async function fetchPrice(url: string): Promise<string | null> {
   const cleanUrl = await cleanAmazonUrl(url);
-  return scrapeAmazonPrice(cleanUrl);
+  const product = await scrapeAmazonProduct(cleanUrl);
+  return product?.price ?? null;
 }
 
 export function addAffiliateTag(url: string): string {
