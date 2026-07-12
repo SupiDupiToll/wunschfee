@@ -39,6 +39,8 @@ export type GiftListMinAggregateOutputType = {
   invitationMessage: string | null
   bgStyle: string | null
   decorations: string | null
+  qrDarkColor: string | null
+  qrLightColor: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -58,6 +60,8 @@ export type GiftListMaxAggregateOutputType = {
   invitationMessage: string | null
   bgStyle: string | null
   decorations: string | null
+  qrDarkColor: string | null
+  qrLightColor: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -77,6 +81,8 @@ export type GiftListCountAggregateOutputType = {
   invitationMessage: number
   bgStyle: number
   decorations: number
+  qrDarkColor: number
+  qrLightColor: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -98,6 +104,8 @@ export type GiftListMinAggregateInputType = {
   invitationMessage?: true
   bgStyle?: true
   decorations?: true
+  qrDarkColor?: true
+  qrLightColor?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -117,6 +125,8 @@ export type GiftListMaxAggregateInputType = {
   invitationMessage?: true
   bgStyle?: true
   decorations?: true
+  qrDarkColor?: true
+  qrLightColor?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -136,6 +146,8 @@ export type GiftListCountAggregateInputType = {
   invitationMessage?: true
   bgStyle?: true
   decorations?: true
+  qrDarkColor?: true
+  qrLightColor?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -228,6 +240,8 @@ export type GiftListGroupByOutputType = {
   invitationMessage: string | null
   bgStyle: string | null
   decorations: string | null
+  qrDarkColor: string | null
+  qrLightColor: string | null
   createdAt: Date
   updatedAt: Date
   _count: GiftListCountAggregateOutputType | null
@@ -268,6 +282,8 @@ export type GiftListWhereInput = {
   invitationMessage?: Prisma.StringNullableFilter<"GiftList"> | string | null
   bgStyle?: Prisma.StringNullableFilter<"GiftList"> | string | null
   decorations?: Prisma.StringNullableFilter<"GiftList"> | string | null
+  qrDarkColor?: Prisma.StringNullableFilter<"GiftList"> | string | null
+  qrLightColor?: Prisma.StringNullableFilter<"GiftList"> | string | null
   createdAt?: Prisma.DateTimeFilter<"GiftList"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GiftList"> | Date | string
   items?: Prisma.GiftItemListRelationFilter
@@ -288,6 +304,8 @@ export type GiftListOrderByWithRelationInput = {
   invitationMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   bgStyle?: Prisma.SortOrderInput | Prisma.SortOrder
   decorations?: Prisma.SortOrderInput | Prisma.SortOrder
+  qrDarkColor?: Prisma.SortOrderInput | Prisma.SortOrder
+  qrLightColor?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   items?: Prisma.GiftItemOrderByRelationAggregateInput
@@ -311,6 +329,8 @@ export type GiftListWhereUniqueInput = Prisma.AtLeast<{
   invitationMessage?: Prisma.StringNullableFilter<"GiftList"> | string | null
   bgStyle?: Prisma.StringNullableFilter<"GiftList"> | string | null
   decorations?: Prisma.StringNullableFilter<"GiftList"> | string | null
+  qrDarkColor?: Prisma.StringNullableFilter<"GiftList"> | string | null
+  qrLightColor?: Prisma.StringNullableFilter<"GiftList"> | string | null
   createdAt?: Prisma.DateTimeFilter<"GiftList"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GiftList"> | Date | string
   items?: Prisma.GiftItemListRelationFilter
@@ -331,6 +351,8 @@ export type GiftListOrderByWithAggregationInput = {
   invitationMessage?: Prisma.SortOrderInput | Prisma.SortOrder
   bgStyle?: Prisma.SortOrderInput | Prisma.SortOrder
   decorations?: Prisma.SortOrderInput | Prisma.SortOrder
+  qrDarkColor?: Prisma.SortOrderInput | Prisma.SortOrder
+  qrLightColor?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.GiftListCountOrderByAggregateInput
@@ -356,6 +378,8 @@ export type GiftListScalarWhereWithAggregatesInput = {
   invitationMessage?: Prisma.StringNullableWithAggregatesFilter<"GiftList"> | string | null
   bgStyle?: Prisma.StringNullableWithAggregatesFilter<"GiftList"> | string | null
   decorations?: Prisma.StringNullableWithAggregatesFilter<"GiftList"> | string | null
+  qrDarkColor?: Prisma.StringNullableWithAggregatesFilter<"GiftList"> | string | null
+  qrLightColor?: Prisma.StringNullableWithAggregatesFilter<"GiftList"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"GiftList"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"GiftList"> | Date | string
 }
@@ -375,6 +399,8 @@ export type GiftListCreateInput = {
   invitationMessage?: string | null
   bgStyle?: string | null
   decorations?: string | null
+  qrDarkColor?: string | null
+  qrLightColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.GiftItemCreateNestedManyWithoutListInput
@@ -395,6 +421,8 @@ export type GiftListUncheckedCreateInput = {
   invitationMessage?: string | null
   bgStyle?: string | null
   decorations?: string | null
+  qrDarkColor?: string | null
+  qrLightColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
   items?: Prisma.GiftItemUncheckedCreateNestedManyWithoutListInput
@@ -415,6 +443,8 @@ export type GiftListUpdateInput = {
   invitationMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bgStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decorations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qrDarkColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qrLightColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.GiftItemUpdateManyWithoutListNestedInput
@@ -435,6 +465,8 @@ export type GiftListUncheckedUpdateInput = {
   invitationMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bgStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decorations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qrDarkColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qrLightColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   items?: Prisma.GiftItemUncheckedUpdateManyWithoutListNestedInput
@@ -455,6 +487,8 @@ export type GiftListCreateManyInput = {
   invitationMessage?: string | null
   bgStyle?: string | null
   decorations?: string | null
+  qrDarkColor?: string | null
+  qrLightColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -474,6 +508,8 @@ export type GiftListUpdateManyMutationInput = {
   invitationMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bgStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decorations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qrDarkColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qrLightColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -493,6 +529,8 @@ export type GiftListUncheckedUpdateManyInput = {
   invitationMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bgStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decorations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qrDarkColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qrLightColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -512,6 +550,8 @@ export type GiftListCountOrderByAggregateInput = {
   invitationMessage?: Prisma.SortOrder
   bgStyle?: Prisma.SortOrder
   decorations?: Prisma.SortOrder
+  qrDarkColor?: Prisma.SortOrder
+  qrLightColor?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -531,6 +571,8 @@ export type GiftListMaxOrderByAggregateInput = {
   invitationMessage?: Prisma.SortOrder
   bgStyle?: Prisma.SortOrder
   decorations?: Prisma.SortOrder
+  qrDarkColor?: Prisma.SortOrder
+  qrLightColor?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -550,6 +592,8 @@ export type GiftListMinOrderByAggregateInput = {
   invitationMessage?: Prisma.SortOrder
   bgStyle?: Prisma.SortOrder
   decorations?: Prisma.SortOrder
+  qrDarkColor?: Prisma.SortOrder
+  qrLightColor?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -608,6 +652,8 @@ export type GiftListCreateWithoutItemsInput = {
   invitationMessage?: string | null
   bgStyle?: string | null
   decorations?: string | null
+  qrDarkColor?: string | null
+  qrLightColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -627,6 +673,8 @@ export type GiftListUncheckedCreateWithoutItemsInput = {
   invitationMessage?: string | null
   bgStyle?: string | null
   decorations?: string | null
+  qrDarkColor?: string | null
+  qrLightColor?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -662,6 +710,8 @@ export type GiftListUpdateWithoutItemsInput = {
   invitationMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bgStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decorations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qrDarkColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qrLightColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -681,6 +731,8 @@ export type GiftListUncheckedUpdateWithoutItemsInput = {
   invitationMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   bgStyle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   decorations?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qrDarkColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  qrLightColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -731,6 +783,8 @@ export type GiftListSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   invitationMessage?: boolean
   bgStyle?: boolean
   decorations?: boolean
+  qrDarkColor?: boolean
+  qrLightColor?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   items?: boolean | Prisma.GiftList$itemsArgs<ExtArgs>
@@ -752,6 +806,8 @@ export type GiftListSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   invitationMessage?: boolean
   bgStyle?: boolean
   decorations?: boolean
+  qrDarkColor?: boolean
+  qrLightColor?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["giftList"]>
@@ -771,6 +827,8 @@ export type GiftListSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   invitationMessage?: boolean
   bgStyle?: boolean
   decorations?: boolean
+  qrDarkColor?: boolean
+  qrLightColor?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["giftList"]>
@@ -790,11 +848,13 @@ export type GiftListSelectScalar = {
   invitationMessage?: boolean
   bgStyle?: boolean
   decorations?: boolean
+  qrDarkColor?: boolean
+  qrLightColor?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type GiftListOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "slug" | "title" | "honoreeName" | "birthdayLabel" | "eventDate" | "message" | "hideReservations" | "isArchived" | "invitationHeadline" | "invitationMessage" | "bgStyle" | "decorations" | "createdAt" | "updatedAt", ExtArgs["result"]["giftList"]>
+export type GiftListOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "slug" | "title" | "honoreeName" | "birthdayLabel" | "eventDate" | "message" | "hideReservations" | "isArchived" | "invitationHeadline" | "invitationMessage" | "bgStyle" | "decorations" | "qrDarkColor" | "qrLightColor" | "createdAt" | "updatedAt", ExtArgs["result"]["giftList"]>
 export type GiftListInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   items?: boolean | Prisma.GiftList$itemsArgs<ExtArgs>
   _count?: boolean | Prisma.GiftListCountOutputTypeDefaultArgs<ExtArgs>
@@ -822,6 +882,8 @@ export type $GiftListPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     invitationMessage: string | null
     bgStyle: string | null
     decorations: string | null
+    qrDarkColor: string | null
+    qrLightColor: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["giftList"]>
@@ -1262,6 +1324,8 @@ export interface GiftListFieldRefs {
   readonly invitationMessage: Prisma.FieldRef<"GiftList", 'String'>
   readonly bgStyle: Prisma.FieldRef<"GiftList", 'String'>
   readonly decorations: Prisma.FieldRef<"GiftList", 'String'>
+  readonly qrDarkColor: Prisma.FieldRef<"GiftList", 'String'>
+  readonly qrLightColor: Prisma.FieldRef<"GiftList", 'String'>
   readonly createdAt: Prisma.FieldRef<"GiftList", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"GiftList", 'DateTime'>
 }

@@ -54,11 +54,19 @@ const DECORATIONS = [
 export function ManageListSettings({ list }: ManageListSettingsProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [selectedBg, setSelectedBg] = useState(list.bgStyle || "default");
+  const [selectedDecor, setSelectedDecor] = useState(list.decorations || "none");
+  const [qrDark, setQrDark] = useState(list.qrDarkColor || "#1a1a1a");
+  const [qrLight, setQrLight] = useState(list.qrLightColor || "#ffffff");
 
   async function handleUpdate(
     _prev: { error: string } | null,
     formData: FormData
   ): Promise<{ error: string } | null> {
+    formData.set("bgStyle", selectedBg);
+    formData.set("decorations", selectedDecor);
+    formData.set("qrDarkColor", qrDark);
+    formData.set("qrLightColor", qrLight);
     const result = await updateList(list.id, _prev, formData);
     if (result?.error) {
       toast.error(result.error);
@@ -76,9 +84,6 @@ export function ManageListSettings({ list }: ManageListSettingsProps) {
   }
 
   const [, formAction, pending] = useActionState(handleUpdate, null);
-
-  const currentBg = list.bgStyle || "default";
-  const currentDecor = list.decorations || "none";
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -119,29 +124,24 @@ export function ManageListSettings({ list }: ManageListSettingsProps) {
               <Label>Hintergrund-Verlauf</Label>
               <div className="grid grid-cols-2 gap-2">
                 {BG_STYLES.map((bg) => (
-                  <label
+                  <button
+                    type="button"
                     key={bg.value}
+                    onClick={() => setSelectedBg(bg.value)}
                     className={`relative flex cursor-pointer flex-col items-center gap-1.5 rounded-xl border p-3 text-center transition-all hover:shadow-sm ${
-                      currentBg === bg.value
+                      selectedBg === bg.value
                         ? "border-primary ring-1 ring-primary"
                         : "border-muted-foreground/20"
                     }`}
                   >
-                    <input
-                      type="radio"
-                      name="bgStyle"
-                      value={bg.value}
-                      defaultChecked={currentBg === bg.value}
-                      className="sr-only"
-                    />
                     <div
                       className={`h-8 w-full rounded-lg bg-gradient-to-br ${bg.from} ${bg.via} ${bg.to}`}
                     />
                     <span className="text-xs font-medium">{bg.label}</span>
-                    {currentBg === bg.value && (
+                    {selectedBg === bg.value && (
                       <Check className="absolute top-1 right-1 h-3 w-3 text-primary" />
                     )}
-                  </label>
+                  </button>
                 ))}
               </div>
             </div>
@@ -150,28 +150,65 @@ export function ManageListSettings({ list }: ManageListSettingsProps) {
               <Label>Dekorationen / Formen</Label>
               <div className="grid grid-cols-3 gap-2">
                 {DECORATIONS.map((dec) => (
-                  <label
+                  <button
+                    type="button"
                     key={dec.value}
+                    onClick={() => setSelectedDecor(dec.value)}
                     className={`relative flex cursor-pointer flex-col items-center gap-1 rounded-xl border p-3 text-center transition-all hover:shadow-sm ${
-                      currentDecor === dec.value
+                      selectedDecor === dec.value
                         ? "border-primary ring-1 ring-primary"
                         : "border-muted-foreground/20"
                     }`}
                   >
-                    <input
-                      type="radio"
-                      name="decorations"
-                      value={dec.value}
-                      defaultChecked={currentDecor === dec.value}
-                      className="sr-only"
-                    />
                     <span className="text-lg">{dec.icon}</span>
                     <span className="text-xs font-medium">{dec.label}</span>
-                    {currentDecor === dec.value && (
+                    {selectedDecor === dec.value && (
                       <Check className="absolute top-1 right-1 h-3 w-3 text-primary" />
                     )}
-                  </label>
+                  </button>
                 ))}
+              </div>
+            </div>
+
+            <Separator />
+
+            <div className="space-y-2">
+              <Label>QR-Code Farbe</Label>
+              <div className="flex gap-3">
+                <div className="flex-1 space-y-1.5">
+                  <Label className="text-xs text-muted-foreground">Dunkel (Vordergrund)</Label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={qrDark}
+                      onChange={(e) => setQrDark(e.target.value)}
+                      className="h-9 w-9 cursor-pointer rounded-md border bg-transparent p-0.5"
+                    />
+                    <Input
+                      value={qrDark}
+                      onChange={(e) => setQrDark(e.target.value)}
+                      className="h-9 font-mono text-xs"
+                      placeholder="#1a1a1a"
+                    />
+                  </div>
+                </div>
+                <div className="flex-1 space-y-1.5">
+                  <Label className="text-xs text-muted-foreground">Hell (Hintergrund)</Label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={qrLight}
+                      onChange={(e) => setQrLight(e.target.value)}
+                      className="h-9 w-9 cursor-pointer rounded-md border bg-transparent p-0.5"
+                    />
+                    <Input
+                      value={qrLight}
+                      onChange={(e) => setQrLight(e.target.value)}
+                      className="h-9 font-mono text-xs"
+                      placeholder="#ffffff"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 

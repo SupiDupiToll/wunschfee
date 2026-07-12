@@ -26,12 +26,15 @@ export default async function InvitationPage({ params }: Props) {
   const listUrl = `${siteUrl}/liste/${list.slug}`;
   const invitationUrl = `${siteUrl}/liste/${list.slug}/einladung`;
 
+  const qrDarkColor = list.qrDarkColor || "#1a1a1a";
+  const qrLightColor = list.qrLightColor || "#ffffff";
+
   const qrDataUrl = await QRCode.toDataURL(invitationUrl, {
     width: 300,
     margin: 2,
     color: {
-      dark: "#1a1a1a",
-      light: "#ffffff",
+      dark: qrDarkColor,
+      light: qrLightColor,
     },
   });
 

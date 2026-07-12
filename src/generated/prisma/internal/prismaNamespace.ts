@@ -607,6 +607,8 @@ export const GiftListScalarFieldEnum = {
   invitationMessage: 'invitationMessage',
   bgStyle: 'bgStyle',
   decorations: 'decorations',
+  qrDarkColor: 'qrDarkColor',
+  qrLightColor: 'qrLightColor',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

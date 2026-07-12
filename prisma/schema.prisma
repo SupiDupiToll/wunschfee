@@ -22,6 +22,8 @@ model GiftList {
   invitationMessage  String?  @map("invitation_message")
   bgStyle           String?   @default("default") @map("bg_style")
   decorations       String?   @default("none") @map("decorations")
+  qrDarkColor       String?   @default("#1a1a1a") @map("qr_dark_color")
+  qrLightColor      String?   @default("#ffffff") @map("qr_light_color")
   createdAt        DateTime  @default(now()) @map("created_at")
   updatedAt        DateTime  @updatedAt @map("updated_at")
 
