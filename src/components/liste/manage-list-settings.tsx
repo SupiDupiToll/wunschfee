@@ -24,7 +24,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Separator } from "@/components/ui/separator";
-import { Settings, Trash2, Loader2 } from "lucide-react";
+import { Settings, Trash2, Loader2, Check } from "lucide-react";
 import { updateList, deleteList } from "@/actions/list";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -33,6 +33,23 @@ import type { GiftList } from "@/db/schema";
 interface ManageListSettingsProps {
   list: GiftList;
 }
+
+const BG_STYLES = [
+  { value: "default", label: "Klassisch", from: "from-amber-50", via: "via-white", to: "to-amber-50" },
+  { value: "warm", label: "Warm", from: "from-orange-50", via: "via-rose-50", to: "to-amber-50" },
+  { value: "cool", label: "Kühl", from: "from-sky-50", via: "via-indigo-50", to: "to-blue-50" },
+  { value: "nature", label: "Natur", from: "from-emerald-50", via: "via-teal-50", to: "to-green-50" },
+  { value: "festive", label: "Festlich", from: "from-pink-50", via: "via-purple-50", to: "to-rose-50" },
+  { value: "minimal", label: "Minimal", from: "from-stone-50", via: "via-white", to: "to-stone-50" },
+] as const;
+
+const DECORATIONS = [
+  { value: "none", label: "Keine", icon: "○" },
+  { value: "circles", label: "Kreise", icon: "◯" },
+  { value: "confetti", label: "Konfetti", icon: "✦" },
+  { value: "stars", label: "Sterne", icon: "★" },
+  { value: "hearts", label: "Herzen", icon: "♥" },
+] as const;
 
 export function ManageListSettings({ list }: ManageListSettingsProps) {
   const router = useRouter();
@@ -60,12 +77,15 @@ export function ManageListSettings({ list }: ManageListSettingsProps) {
 
   const [, formAction, pending] = useActionState(handleUpdate, null);
 
+  const currentBg = list.bgStyle || "default";
+  const currentDecor = list.decorations || "none";
+
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-foreground transition-colors hover:bg-muted">
         <Settings className="h-5 w-5" />
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="font-serif">Einstellungen</SheetTitle>
           <SheetDescription>
@@ -93,7 +113,69 @@ export function ManageListSettings({ list }: ManageListSettingsProps) {
               />
             </div>
 
-                  <Button
+            <Separator />
+
+            <div className="space-y-2">
+              <Label>Hintergrund-Verlauf</Label>
+              <div className="grid grid-cols-2 gap-2">
+                {BG_STYLES.map((bg) => (
+                  <label
+                    key={bg.value}
+                    className={`relative flex cursor-pointer flex-col items-center gap-1.5 rounded-xl border p-3 text-center transition-all hover:shadow-sm ${
+                      currentBg === bg.value
+                        ? "border-primary ring-1 ring-primary"
+                        : "border-muted-foreground/20"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="bgStyle"
+                      value={bg.value}
+                      defaultChecked={currentBg === bg.value}
+                      className="sr-only"
+                    />
+                    <div
+                      className={`h-8 w-full rounded-lg bg-gradient-to-br ${bg.from} ${bg.via} ${bg.to}`}
+                    />
+                    <span className="text-xs font-medium">{bg.label}</span>
+                    {currentBg === bg.value && (
+                      <Check className="absolute top-1 right-1 h-3 w-3 text-primary" />
+                    )}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label>Dekorationen / Formen</Label>
+              <div className="grid grid-cols-3 gap-2">
+                {DECORATIONS.map((dec) => (
+                  <label
+                    key={dec.value}
+                    className={`relative flex cursor-pointer flex-col items-center gap-1 rounded-xl border p-3 text-center transition-all hover:shadow-sm ${
+                      currentDecor === dec.value
+                        ? "border-primary ring-1 ring-primary"
+                        : "border-muted-foreground/20"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="decorations"
+                      value={dec.value}
+                      defaultChecked={currentDecor === dec.value}
+                      className="sr-only"
+                    />
+                    <span className="text-lg">{dec.icon}</span>
+                    <span className="text-xs font-medium">{dec.label}</span>
+                    {currentDecor === dec.value && (
+                      <Check className="absolute top-1 right-1 h-3 w-3 text-primary" />
+                    )}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <Button
               type="submit"
               className="w-full"
               disabled={pending}

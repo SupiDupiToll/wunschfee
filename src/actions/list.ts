@@ -77,12 +77,14 @@ export async function updateList(
   const parsed = updateListSchema.safeParse(raw);
   if (!parsed.success) return { error: "Ungültige Eingabe" };
 
-  const { eventDate, invitationHeadline, invitationMessage, ...rest } = parsed.data;
+  const { eventDate, invitationHeadline, invitationMessage, bgStyle, decorations, ...rest } = parsed.data;
 
   const updateData: Record<string, unknown> = { ...rest };
   if (eventDate) updateData.eventDate = new Date(eventDate);
   if (invitationHeadline !== undefined) updateData.invitationHeadline = invitationHeadline || null;
   if (invitationMessage !== undefined) updateData.invitationMessage = invitationMessage || null;
+  if (bgStyle !== undefined) updateData.bgStyle = bgStyle || null;
+  if (decorations !== undefined) updateData.decorations = decorations || null;
 
   await db.giftList.update({
     where: { id: listId },

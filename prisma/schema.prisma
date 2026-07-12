@@ -20,6 +20,8 @@ model GiftList {
   isArchived        Boolean   @default(false) @map("is_archived")
   invitationHeadline String?  @map("invitation_headline")
   invitationMessage  String?  @map("invitation_message")
+  bgStyle           String?   @default("default") @map("bg_style")
+  decorations       String?   @default("none") @map("decorations")
   createdAt        DateTime  @default(now()) @map("created_at")
   updatedAt        DateTime  @updatedAt @map("updated_at")
 

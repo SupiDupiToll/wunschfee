@@ -84,6 +84,8 @@ export const GiftListScalarFieldEnum = {
   isArchived: 'isArchived',
   invitationHeadline: 'invitationHeadline',
   invitationMessage: 'invitationMessage',
+  bgStyle: 'bgStyle',
+  decorations: 'decorations',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

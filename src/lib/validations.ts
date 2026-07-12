@@ -19,6 +19,8 @@ export const updateListSchema = z.object({
   message: z.string().max(500).optional(),
   invitationHeadline: z.string().max(200).optional().or(z.literal("")),
   invitationMessage: z.string().max(2000).optional().or(z.literal("")),
+  bgStyle: z.string().optional(),
+  decorations: z.string().optional(),
 });
 
 export const addItemSchema = z.object({
