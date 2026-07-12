@@ -141,19 +141,15 @@ function parseImages(html: string): string[] {
     if (isProductImage(m[1])) images.push(m[1]);
   }
 
-  // 3) og:image meta tag
-  const ogMatch = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/);
-  if (ogMatch && isProductImage(ogMatch[1])) images.push(ogMatch[1]);
-
-  // 4) #landingImage – Hauptproduktbild
+  // 3) #landingImage – Hauptproduktbild
   const landingMatch = html.match(/id="landingImage"[^>]+src="([^"]+)"/);
   if (landingMatch && isProductImage(landingMatch[1])) images.push(landingMatch[1]);
 
-  // 5) #imgTagWrapperId > img
+  // 4) #imgTagWrapperId > img
   const wrapperMatch = html.match(/id="imgTagWrapperId"[^>]*>\s*<img[^>]+src="([^"]+)"/);
   if (wrapperMatch && isProductImage(wrapperMatch[1])) images.push(wrapperMatch[1]);
 
-  // 6) Alle img[src] innerhalb von #altImages (Thumbnails → Normalisierung macht High-Res draus)
+  // 5) Alle img[src] innerhalb von #altImages (Thumbnails → Normalisierung macht High-Res draus)
   const altSection = html.match(/id="altImages"[\s\S]{0,5000}/i);
   if (altSection) {
     const imgRegex = /<img[^>]+src="([^"]+)"/g;
@@ -162,6 +158,10 @@ function parseImages(html: string): string[] {
       if (isProductImage(im[1])) images.push(im[1]);
     }
   }
+
+  // 6) og:image meta tag (nur als letzte Quelle – oft unzuverlässig)
+  const ogMatch = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/);
+  if (ogMatch && isProductImage(ogMatch[1])) images.push(ogMatch[1]);
 
   // Normalisieren + Deduplizieren
   const seen = new Map<string, string>();
@@ -186,20 +186,9 @@ function formatPrice(price: string): string {
   return `${cleaned} €`;
 }
 
-function isProductPage(html: string): boolean {
-  return (
-    /id="productTitle"/.test(html) ||
-    /"@type":\s*"Product"/.test(html) ||
-    /property="og:type"[^>]+content="product"/.test(html) ||
-    /id="landingImage"/.test(html)
-  );
-}
-
 export function parseHtml(html: string): ScrapedData | null {
   const title = parseTitle(html);
   if (!title || title.length < 2) return null;
-
-  if (!isProductPage(html)) return null;
 
   const cleanTitle = title.replace(/ : [A-Za-z0-9.-]+\.[a-z]+: .+$/, "").trim();
 

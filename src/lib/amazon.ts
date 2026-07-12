@@ -112,15 +112,10 @@ async function tryFetch(url: string, proxy?: (url: string) => string): Promise<S
     const html = await res.text();
     if (html.length < 5000) return null;
 
+    // Prüft nur, ob die ASIN überhaupt irgendwo im HTML vorkommt
+    // (verhindert, dass ein Proxy eine komplett andere Seite zurückgibt)
     const expectedAsin = extractAsin(url);
-    if (expectedAsin) {
-      const canonicalMatch = html.match(/<link[^>]+rel="canonical"[^>]+href="([^"]+)"/);
-      const ogUrlMatch = html.match(/<meta[^>]+property="og:url"[^>]+content="([^"]+)"/);
-      const pageUrl = canonicalMatch?.[1] || ogUrlMatch?.[1] || "";
-      const dataAsinMatch = html.match(/data-asin="([^"]*)"/);
-      const pageAsin = extractAsin(pageUrl) || dataAsinMatch?.[1] || "";
-      if (pageAsin && pageAsin !== expectedAsin) return null;
-    }
+    if (expectedAsin && !html.includes(expectedAsin)) return null;
 
     return parseHtml(html);
   } catch {
