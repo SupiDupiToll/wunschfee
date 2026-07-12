@@ -8,14 +8,7 @@ const CORS_PROXIES = [
 ];
 
 export function proxyImageUrl(url: string | null): string | null {
-  if (!url) return null;
-  if (
-    !url.includes("m.media-amazon.com") &&
-    !url.includes("images-na.ssl-images-amazon.com")
-  ) {
-    return url;
-  }
-  return `https://external-content.duckduckgo.com/iu/?u=${encodeURIComponent(url)}`;
+  return url;
 }
 
 export function extractAsin(url: string): string | null {
@@ -53,7 +46,7 @@ export async function cleanAmazonUrl(url: string): Promise<string> {
   }
 }
 
-// Schnelle Vorschau via CORS-Proxies (nur Titel + Hauptbild)
+// Vorschau via CORS-Proxies (nur Titel + Hauptbild)
 export async function fetchPreview(url: string): Promise<{ title: string; imageUrl: string | null } | null> {
   const cleanUrl = await cleanAmazonUrl(url);
 
@@ -118,6 +111,17 @@ async function tryFetch(url: string, proxy?: (url: string) => string): Promise<S
     if (!res.ok) return null;
     const html = await res.text();
     if (html.length < 5000) return null;
+
+    const expectedAsin = extractAsin(url);
+    if (expectedAsin) {
+      const canonicalMatch = html.match(/<link[^>]+rel="canonical"[^>]+href="([^"]+)"/);
+      const ogUrlMatch = html.match(/<meta[^>]+property="og:url"[^>]+content="([^"]+)"/);
+      const pageUrl = canonicalMatch?.[1] || ogUrlMatch?.[1] || "";
+      const dataAsinMatch = html.match(/data-asin="([^"]*)"/);
+      const pageAsin = extractAsin(pageUrl) || dataAsinMatch?.[1] || "";
+      if (pageAsin && pageAsin !== expectedAsin) return null;
+    }
+
     return parseHtml(html);
   } catch {
     return null;

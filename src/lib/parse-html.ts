@@ -186,9 +186,20 @@ function formatPrice(price: string): string {
   return `${cleaned} €`;
 }
 
+function isProductPage(html: string): boolean {
+  return (
+    /id="productTitle"/.test(html) ||
+    /"@type":\s*"Product"/.test(html) ||
+    /property="og:type"[^>]+content="product"/.test(html) ||
+    /id="landingImage"/.test(html)
+  );
+}
+
 export function parseHtml(html: string): ScrapedData | null {
   const title = parseTitle(html);
   if (!title || title.length < 2) return null;
+
+  if (!isProductPage(html)) return null;
 
   const cleanTitle = title.replace(/ : [A-Za-z0-9.-]+\.[a-z]+: .+$/, "").trim();
 
