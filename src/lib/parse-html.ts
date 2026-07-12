@@ -131,25 +131,22 @@ function isProductImage(url: string): boolean {
 function parseImages(html: string): string[] {
   const images: string[] = [];
 
-  // 1) JSON-LD structured data
-  images.push(...parseJsonLdImages(html));
+  // 1) #landingImage – Amazon's Hauptproduktbild (zuverlässigste Quelle)
+  const landingMatch = html.match(/id="landingImage"[^>]+src="([^"]+)"/);
+  if (landingMatch && isProductImage(landingMatch[1])) images.push(landingMatch[1]);
 
-  // 2) Alle data-a-hires-Attribute (Amazon's High-Res-Thumbnails)
+  // 2) #imgTagWrapperId > img (Amazon's sekundärer Hauptbild-Container)
+  const wrapperMatch = html.match(/id="imgTagWrapperId"[^>]*>\s*<img[^>]+src="([^"]+)"/);
+  if (wrapperMatch && isProductImage(wrapperMatch[1])) images.push(wrapperMatch[1]);
+
+  // 3) data-a-hires – Amazon's High-Res-Thumbnails (nur Produktbilder)
   const hiresRegex = /data-a-hires="([^"]+)"/g;
   let m;
   while ((m = hiresRegex.exec(html)) !== null) {
     if (isProductImage(m[1])) images.push(m[1]);
   }
 
-  // 3) #landingImage – Hauptproduktbild
-  const landingMatch = html.match(/id="landingImage"[^>]+src="([^"]+)"/);
-  if (landingMatch && isProductImage(landingMatch[1])) images.push(landingMatch[1]);
-
-  // 4) #imgTagWrapperId > img
-  const wrapperMatch = html.match(/id="imgTagWrapperId"[^>]*>\s*<img[^>]+src="([^"]+)"/);
-  if (wrapperMatch && isProductImage(wrapperMatch[1])) images.push(wrapperMatch[1]);
-
-  // 5) Alle img[src] innerhalb von #altImages (Thumbnails → Normalisierung macht High-Res draus)
+  // 4) #altImages – Amazon's alternative Produktansichten
   const altSection = html.match(/id="altImages"[\s\S]{0,5000}/i);
   if (altSection) {
     const imgRegex = /<img[^>]+src="([^"]+)"/g;
@@ -159,9 +156,29 @@ function parseImages(html: string): string[] {
     }
   }
 
-  // 6) og:image meta tag (nur als letzte Quelle – oft unzuverlässig)
-  const ogMatch = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/);
-  if (ogMatch && isProductImage(ogMatch[1])) images.push(ogMatch[1]);
+  // 5) data-a-dynamic-image – Amazon's JSON-Blob mit allen Auflösungen
+  if (images.length === 0) {
+    const dynamicMatch = html.match(/data-a-dynamic-image='(\{.*?\})'/);
+    if (dynamicMatch) {
+      try {
+        const dynamicImages = JSON.parse(dynamicMatch[1]);
+        const urls = Object.keys(dynamicImages);
+        const valid = urls.filter(u => isProductImage(u));
+        images.push(...valid);
+      } catch {}
+    }
+  }
+
+  // 6) JSON-LD structured data (für Nicht-Amazon-Läden wie Etsy)
+  if (images.length === 0) {
+    images.push(...parseJsonLdImages(html));
+  }
+
+  // 7) og:image – unzuverlässig, nur als letzte Quelle
+  if (images.length === 0) {
+    const ogMatch = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/);
+    if (ogMatch && isProductImage(ogMatch[1])) images.push(ogMatch[1]);
+  }
 
   // Normalisieren + Deduplizieren
   const seen = new Map<string, string>();
