@@ -1,4 +1,3 @@
-import { scrapeAmazonProduct } from "./brightdata";
 import { parseHtml, type ScrapedData } from "./parse-html";
 
 const CORS_PROXIES = [
@@ -17,10 +16,6 @@ export function proxyImageUrl(url: string | null): string | null {
     return url;
   }
   return `https://external-content.duckduckgo.com/iu/?u=${encodeURIComponent(url)}`;
-}
-
-export function proxyImages(urls: string[]): string[] {
-  return urls.map((u) => proxyImageUrl(u)).filter((u): u is string => u !== null);
 }
 
 export function extractAsin(url: string): string | null {
@@ -59,7 +54,6 @@ export async function cleanAmazonUrl(url: string): Promise<string> {
 }
 
 // Schnelle Vorschau via CORS-Proxies (nur Titel + Hauptbild)
-// Hintergrund-Anreicherung mit allen Bildern + Preis via updateItemPrice()
 export async function fetchPreview(url: string): Promise<{ title: string; imageUrl: string | null } | null> {
   const cleanUrl = await cleanAmazonUrl(url);
 
@@ -72,17 +66,6 @@ export async function fetchPreview(url: string): Promise<{ title: string; imageU
   }
 
   return null;
-}
-
-// Preis + Bilder via Brightdata (für Hintergrund-Updates)
-export async function fetchPrice(url: string): Promise<{ price: string | null; images: string[] } | null> {
-  const cleanUrl = await cleanAmazonUrl(url);
-  const product = await scrapeAmazonProduct(cleanUrl);
-  if (!product) return null;
-  return {
-    price: product.price,
-    images: proxyImages(product.images),
-  };
 }
 
 export function addAffiliateTag(url: string): string {
@@ -141,30 +124,4 @@ async function tryFetch(url: string, proxy?: (url: string) => string): Promise<S
   }
 }
 
-function isAmazonUrl(url: string): boolean {
-  try {
-    const hostname = new URL(url).hostname.toLowerCase();
-    return hostname.includes("amazon") || hostname.includes("amzn");
-  } catch {
-    return false;
-  }
-}
 
-export async function scrapeProductData(url: string): Promise<ScrapedData | null> {
-  const cleanUrl = await cleanAmazonUrl(url);
-
-  if (isAmazonUrl(cleanUrl)) {
-    const product = await scrapeAmazonProduct(cleanUrl);
-    if (product) return product;
-  }
-
-  const direct = await tryFetch(cleanUrl);
-  if (direct) return direct;
-
-  for (const proxy of CORS_PROXIES) {
-    const result = await tryFetch(cleanUrl, proxy);
-    if (result) return result;
-  }
-
-  return null;
-}

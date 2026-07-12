@@ -29,7 +29,7 @@ export function AddItemForm({ listId }: AddItemFormProps) {
   const [fetchError, setFetchError] = useState(false);
   const [manualTitle, setManualTitle] = useState("");
   const [manualImage, setManualImage] = useState("");
-  const [manualPrice, setManualPrice] = useState("");
+  const [price, setPrice] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
 
   async function handleUrlChange(value: string) {
@@ -39,6 +39,7 @@ export function AddItemForm({ listId }: AddItemFormProps) {
     setFetching(true);
     setFetchError(false);
     setPreview(null);
+    setPrice("");
 
     try {
       const result = await fetchProductData(value);
@@ -67,11 +68,11 @@ export function AddItemForm({ listId }: AddItemFormProps) {
     if (fetchError) {
       formData.set("title", manualTitle);
       formData.set("imageUrl", manualImage);
-      formData.set("price", manualPrice);
+      formData.set("price", price);
     } else if (preview) {
       formData.set("title", preview.title);
       formData.set("imageUrl", preview.imageUrl || "");
-      formData.set("price", "");
+      formData.set("price", price);
     }
 
     const result = await addItem(null, formData);
@@ -113,33 +114,45 @@ export function AddItemForm({ listId }: AddItemFormProps) {
           )}
 
           {preview && !fetching && (
-            <div className="flex items-center gap-3 rounded-lg border bg-secondary/30 p-3">
-              <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-muted">
-                {preview.imageUrl ? (
-                  <Image
-                    src={preview.imageUrl}
-                    alt=""
-                    fill
-                    className="object-cover"
-                    unoptimized
-                  />
-                ) : (
-                  <div className="flex h-full items-center justify-center text-muted-foreground">
-                    <ImageOff className="h-6 w-6" />
-                  </div>
-                )}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="line-clamp-2 text-sm font-medium">
-                  {preview.title}
-                </p>
-                {preview.store && (
-                  <p className="text-xs text-muted-foreground">
-                    {preview.store}
+            <>
+              <div className="flex items-center gap-3 rounded-lg border bg-secondary/30 p-3">
+                <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-muted">
+                  {preview.imageUrl ? (
+                    <Image
+                      src={preview.imageUrl}
+                      alt=""
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center text-muted-foreground">
+                      <ImageOff className="h-6 w-6" />
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="line-clamp-2 text-sm font-medium">
+                    {preview.title}
                   </p>
-                )}
+                  {preview.store && (
+                    <p className="text-xs text-muted-foreground">
+                      {preview.store}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="price">Preis</Label>
+                <Input
+                  id="price"
+                  placeholder="z.B. 29,99 €"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  required
+                />
+              </div>
+            </>
           )}
 
           {fetchError && !fetching && (
@@ -159,9 +172,10 @@ export function AddItemForm({ listId }: AddItemFormProps) {
                 onChange={(e) => setManualImage(e.target.value)}
               />
               <Input
-                placeholder="Preis (optional)"
-                value={manualPrice}
-                onChange={(e) => setManualPrice(e.target.value)}
+                placeholder="Preis"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                required
               />
             </div>
           )}

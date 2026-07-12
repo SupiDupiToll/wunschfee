@@ -85,17 +85,18 @@ export default function DatenschutzPage() {
           </p>
 
           <h2 className="font-medium text-foreground">
-            5. Externe Produkterkennung (Scraping)
+            5. Externe Produkterkennung
           </h2>
           <p>
-            Wenn du einen Amazon-Produktlink eingibst, versucht die Webseite
-            automatisch, Produktinformationen (Titel, Preis, Bild) zu ermitteln.
-            Dabei können folgende Dienste angefragt werden:
+            Wenn du einen Produktlink eingibst, versucht die Webseite
+            automatisch, den Titel und das Bild zu ermitteln. Der Preis wird
+            manuell von dir eingegeben. Dabei können folgende Dienste angefragt
+            werden:
           </p>
           <ul className="list-disc space-y-1 pl-5">
             <li>
               <strong>api.allorigins.win</strong> – Ein CORS-Proxy zur
-              Weiterleitung der Anfrage an Amazon. Es werden keine
+              Weiterleitung der Anfrage an den Shop. Es werden keine
               personenbezogenen Daten übermittelt.
             </li>
             <li>

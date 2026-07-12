@@ -27,7 +27,7 @@ export const addItemSchema = z.object({
   title: z.string().min(1, "Titel darf nicht leer sein").max(500),
   imageUrl: z.string().url().optional().or(z.literal("")),
   images: z.string().optional().or(z.literal("")),
-  price: z.string().max(50).optional().or(z.literal("")),
+  price: z.string().min(1, "Bitte gib einen Preis ein").max(50),
 });
 
 export const reserveSchema = z.object({

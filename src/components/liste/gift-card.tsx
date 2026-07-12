@@ -15,12 +15,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Trash2, Pencil, Eye, Loader } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Trash2, Pencil, Eye } from "lucide-react";
+import { useState } from "react";
 import { EditItemModal } from "./edit-item-modal";
 import { ProductDetailModal } from "./product-detail-modal";
 import { deleteItem } from "@/actions/item";
-import { updateItemPrice } from "@/actions/amazon";
 import { toast } from "sonner";
 import type { GiftItem, GiftList } from "@/db/schema";
 
@@ -35,16 +34,6 @@ export function GiftCard({ item, list: _list, isOwner }: GiftCardProps) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [imageError, setImageError] = useState(false);
   const [deleted, setDeleted] = useState(false);
-
-  useEffect(() => {
-    if (!item.price || !item.images) {
-      updateItemPrice(item.id, item.url)
-        .then((updated) => {
-          if (updated) window.location.href = window.location.href;
-        })
-        .catch(() => {});
-    }
-  }, [item.price, item.images, item.id, item.url]);
 
   async function handleDelete() {
     await deleteItem(item.id);
@@ -118,9 +107,8 @@ export function GiftCard({ item, list: _list, isOwner }: GiftCardProps) {
                   {item.price}
                 </p>
               ) : (
-                <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                  <Loader className="h-3 w-3 animate-spin" />
-                  Preis wird ermittelt…
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Kein Preis angegeben
                 </p>
               )}
               {item.store && (
