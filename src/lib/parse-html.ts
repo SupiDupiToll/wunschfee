@@ -157,28 +157,21 @@ function parseImages(html: string): string[] {
   }
 
   // 5) data-a-dynamic-image – Amazon's JSON-Blob mit allen Auflösungen
-  if (images.length === 0) {
-    const dynamicMatch = html.match(/data-a-dynamic-image='(\{.*?\})'/);
-    if (dynamicMatch) {
-      try {
-        const dynamicImages = JSON.parse(dynamicMatch[1]);
-        const urls = Object.keys(dynamicImages);
-        const valid = urls.filter(u => isProductImage(u));
-        images.push(...valid);
-      } catch {}
-    }
+  const dynamicMatch = html.match(/data-a-dynamic-image='(\{.*?\})'/);
+  if (dynamicMatch) {
+    try {
+      const dynamicImages = JSON.parse(dynamicMatch[1]);
+      const urls = Object.keys(dynamicImages);
+      images.push(...urls.filter(u => isProductImage(u)));
+    } catch {}
   }
 
   // 6) JSON-LD structured data (für Nicht-Amazon-Läden wie Etsy)
-  if (images.length === 0) {
-    images.push(...parseJsonLdImages(html));
-  }
+  images.push(...parseJsonLdImages(html));
 
-  // 7) og:image – unzuverlässig, nur als letzte Quelle
-  if (images.length === 0) {
-    const ogMatch = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/);
-    if (ogMatch && isProductImage(ogMatch[1])) images.push(ogMatch[1]);
-  }
+  // 7) og:image – letzte Quelle (oft unzuverlässig)
+  const ogMatch = html.match(/<meta[^>]+property="og:image"[^>]+content="([^"]+)"/);
+  if (ogMatch && isProductImage(ogMatch[1])) images.push(ogMatch[1]);
 
   // Normalisieren + Deduplizieren
   const seen = new Map<string, string>();
