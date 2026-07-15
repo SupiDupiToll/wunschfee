@@ -1,5 +1,3 @@
-import * as cheerio from "cheerio";
-
 export interface ScrapedData {
   title: string;
   imageUrl: string | null;
@@ -157,7 +155,7 @@ function parseImages(html: string): string[] {
   }
 
   // 5) data-a-dynamic-image – Amazon's JSON-Blob mit allen Auflösungen
-  const dynamicMatch = html.match(/data-a-dynamic-image='(\{.*?\})'/);
+  const dynamicMatch = html.match(/data-a-dynamic-image=["'](\{.*?\})["']/);
   if (dynamicMatch) {
     try {
       const dynamicImages = JSON.parse(dynamicMatch[1]);

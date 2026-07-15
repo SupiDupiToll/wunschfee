@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { addItem } from "@/actions/item";
-import { fetchProductData } from "@/actions/amazon";
+import { extractAsin } from "@/lib/amazon";
+import { parseHtml } from "@/lib/parse-html";
 import { ImageOff } from "lucide-react";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -36,26 +37,39 @@ export function AddItemForm({ listId }: AddItemFormProps) {
     setUrl(value);
     if (!value.startsWith("http")) return;
 
+    const asin = extractAsin(value);
+    if (!asin) {
+      setFetchError(true);
+      setManualTitle("");
+      setPreview(null);
+      toast.error("Keine gültige Amazon-Produkt-URL");
+      return;
+    }
+
     setFetching(true);
     setFetchError(false);
     setPreview(null);
     setPrice("");
 
     try {
-      const result = await fetchProductData(value);
-      if (result.error) {
-        setFetchError(true);
-        setManualTitle("");
-        toast.error(result.error);
-      } else {
-        setPreview({
-          title: result.title || "",
-          imageUrl: result.imageUrl || null,
-          store: result.store,
-        });
-      }
+      const res = await fetch(
+        `https://r.jina.ai/https://www.amazon.de/dp/${asin}`,
+        { headers: { "X-Return-Format": "html" } },
+      );
+      if (!res.ok) throw new Error();
+      const html = await res.text();
+      const parsed = parseHtml(html);
+      if (!parsed) throw new Error();
+
+      setPreview({
+        title: parsed.title || "",
+        imageUrl: parsed.imageUrl || null,
+        store: "Amazon",
+      });
+      if (parsed.price) setPrice(parsed.price);
     } catch {
       setFetchError(true);
+      setManualTitle("");
       toast.error("Fehler beim Erkennen des Produkts");
     } finally {
       setFetching(false);

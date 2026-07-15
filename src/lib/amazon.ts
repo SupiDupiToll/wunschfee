@@ -1,16 +1,3 @@
-import { parseHtml, type ScrapedData } from "./parse-html";
-
-const CORS_PROXIES = [
-  (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-  (url: string) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
-  (url: string) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(url)}`,
-  (url: string) => `https://cors.eu.org/${encodeURIComponent(url)}`,
-];
-
-export function proxyImageUrl(url: string | null): string | null {
-  return url;
-}
-
 export function extractAsin(url: string): string | null {
   const patterns = [
     /(?:dp|product|gp\/product)\/([A-Z0-9]{10})/i,
@@ -46,21 +33,6 @@ export async function cleanAmazonUrl(url: string): Promise<string> {
   }
 }
 
-// Vorschau via CORS-Proxies (nur Titel + Hauptbild)
-export async function fetchPreview(url: string): Promise<{ title: string; imageUrl: string | null } | null> {
-  const cleanUrl = await cleanAmazonUrl(url);
-
-  const direct = await tryFetch(cleanUrl);
-  if (direct) return { title: direct.title, imageUrl: direct.imageUrl };
-
-  for (const proxy of CORS_PROXIES) {
-    const result = await tryFetch(cleanUrl, proxy);
-    if (result) return { title: result.title, imageUrl: result.imageUrl };
-  }
-
-  return null;
-}
-
 export function addAffiliateTag(url: string): string {
   const tag =
     typeof process !== "undefined"
@@ -92,34 +64,6 @@ export function detectStore(url: string): string {
     return hostname.replace(/^www\./, "").split(".")[0] || hostname;
   } catch {
     return "Unbekannter Shop";
-  }
-}
-
-async function tryFetch(url: string, proxy?: (url: string) => string): Promise<ScrapedData | null> {
-  const target = proxy ? proxy(url) : url;
-  try {
-    const res = await fetch(target, {
-      headers: proxy ? {} : {
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-          + "AppleWebKit/537.36 (KHTML, like Gecko) "
-          + "Chrome/125.0.0.0 Safari/537.36",
-        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "de-DE,de;q=0.9",
-      },
-    });
-    if (!res.ok) return null;
-    const html = await res.text();
-    if (html.length < 5000) return null;
-
-    // Prüft nur, ob die ASIN überhaupt irgendwo im HTML vorkommt
-    // (verhindert, dass ein Proxy eine komplett andere Seite zurückgibt)
-    const expectedAsin = extractAsin(url);
-    if (expectedAsin && !html.includes(expectedAsin)) return null;
-
-    return parseHtml(html);
-  } catch {
-    return null;
   }
 }
 
