@@ -1,3 +1,9 @@
+export interface AmazonProduct {
+  asin: string;
+  title: string;
+  price: string;
+}
+
 export interface BlogPost {
   slug: string;
   title: string;
@@ -6,6 +12,7 @@ export interface BlogPost {
   publishedAt: string;
   readingTime: string;
   content: string[];
+  products?: AmazonProduct[];
 }
 
 export const blogPosts: BlogPost[] = [
@@ -28,6 +35,10 @@ export const blogPosts: BlogPost[] = [
       "Schritt 3: Teile die Liste. Kopiere den Link zu deiner Liste und teile ihn per WhatsApp, E-Mail oder Instagram. Deine Freunde und Familie können die Liste aufrufen, Geschenke reservieren und sehen, was bereits vergeben ist.",
       "Tipp: Teile den Link nur mit den Personen, die du einladen möchtest – so bleibt die Liste in deinem gewünschten Kreis.",
     ],
+    products: [
+      { asin: "B0CBY8TY3L", title: "Amazon Echo Dot (5. Gen.) mit Uhr", price: "64,99 €" },
+      { asin: "B09XKRMKL3", title: "Amazon Fire TV Stick 4K Max", price: "69,99 €" },
+    ],
   },
   {
     slug: "geschenke-30-geburtstag",
@@ -45,6 +56,10 @@ export const blogPosts: BlogPost[] = [
       "Der 30. Geburtstag ist ein besonderer Meilenstein. Freunde und Familie möchten etwas Besonderes schenken, aber oft ist die Frage: 'Was schenke ich nur?' Damit beide Seiten Freude haben, lohnt sich eine gut organisierte Wunschliste.",
       "Beliebte Geschenke zum 30. Geburtstag: Personalisierte Geschenke wie gravierte Uhren oder Schmuck, Erlebnisgeschenke wie Wochenendtrips oder Kochkurse, Haushalts-Highlights wie hochwertige Küchengeräte, Technik-Gadgets wie smarte Lautsprecher und nachhaltige Geschenke.",
       "Mit einer digitalen Wunschliste kannst du all diese Ideen an einem Ort sammeln. Deine Gäste sehen genau, was du dir wünschst, und können abstimmen, wer was mitbringt – keine doppelten Geschenke mehr.",
+    ],
+    products: [
+      { asin: "B0DVFZDMKJ", title: "LIGHTEN LIFE Bierglas 1996 in Fassbox", price: "16,99 €" },
+      { asin: "B0DGZQSMNX", title: "AMAVEL Whiskyglas mit Gravur", price: "19,95 €" },
     ],
   },
   {
@@ -64,6 +79,10 @@ export const blogPosts: BlogPost[] = [
       "Die Lösung ist einfach: Eine geteilte Wunschliste. Auf Wunschfee kannst du eine Liste erstellen, alle gewünschten Geschenke eintragen und den Link mit deinen Gästen teilen. Jeder kann sehen, was bereits reserviert wurde.",
       "Extra-Tipp: Erstelle für jeden Anlass eine separate Liste. So behältst du den Überblick und deine Gäste auch.",
     ],
+    products: [
+      { asin: "B0CBY8TY3L", title: "Amazon Echo Dot (5. Gen.) mit Uhr", price: "64,99 €" },
+      { asin: "B09XKRMKL3", title: "Amazon Fire TV Stick 4K Max", price: "69,99 €" },
+    ],
   },
   {
     slug: "hochzeitsgeschenke-ideen",
@@ -81,6 +100,10 @@ export const blogPosts: BlogPost[] = [
       "Eine Hochzeit ist das schönste Fest im Leben – und gleichzeitig eine der größten Herausforderungen bei der Geschenkesuche. Was schenkt man einem Paar, das vielleicht schon zusammenwohnt und alles hat?",
       "Klassiker: Geldgeschenke für die Hochzeitsreise, Erlebnisgutscheine, personalisierte Geschenke wie ein Fotoalbum oder gravierte Gegenstände und elegante Wohnaccessoires.",
       "Immer beliebter werden Hochzeitswunschlisten. Das Brautpaar erstellt eine Liste mit Wünschen. Die Gäste können online sehen, was sich das Paar wünscht, und direkt reservieren. Der Vorteil: keine doppelten Geschenke.",
+    ],
+    products: [
+      { asin: "B0CJ5J8QZP", title: "Personalisierte Holzbox mit Gravur", price: "29,99 €" },
+      { asin: "B0BQ7P5P8T", title: "Fondue-Set für 2 Personen", price: "39,99 €" },
     ],
   },
   {
@@ -100,6 +123,10 @@ export const blogPosts: BlogPost[] = [
       "Eine Familien-Wunschliste schafft Abhilfe. Jedes Familienmitglied kann seine eigenen Wünsche eintragen, und alle sehen auf einen Blick, was bereits reserviert wurde.",
       "Praktisch: Jedes Mitglied kann seine eigene Liste führen. Reservierungen sind anonym – die Beschenkten sehen nicht, wer was reserviert hat. So bleibt die Überraschung erhalten.",
     ],
+    products: [
+      { asin: "B0BXX3N4FQ", title: "LEGO Classic Kreativ-Baukasten", price: "29,99 €" },
+      { asin: "B09WN3N3K6", title: "Sodastream Sirup Variety Pack", price: "19,99 €" },
+    ],
   },
   {
     slug: "geschenke-18-geburtstag",
@@ -118,6 +145,10 @@ export const blogPosts: BlogPost[] = [
       "Beliebt sind: Führerschein-Zuschuss oder Fahrsicherheitstraining, hochwertige Kopfhörer oder Bluetooth-Lautsprecher, Schmuck als Erinnerungsstück, Geld für den Führerschein oder das erste Auto, Parfüm oder Designerkleidung, Smartwatch oder Fitness-Tracker und Konzertkarten oder Festivaltickets.",
       "Tipp: Erstelle eine Wunschliste mit mehreren Preiskategorien. So können auch Freunde mit kleinerem Budget etwas Passendes finden.",
     ],
+    products: [
+      { asin: "B0B6G5X4TG", title: "Sony WH-1000XM5 Kopfhörer", price: "299,00 €" },
+      { asin: "B0B7Z9P8H7", title: "JBL Charge 5 Bluetooth-Lautsprecher", price: "149,00 €" },
+    ],
   },
   {
     slug: "geschenke-freundin",
@@ -135,6 +166,10 @@ export const blogPosts: BlogPost[] = [
       "Ein Geschenk für die Freundin zu finden, ist nicht immer leicht. Es soll zeigen, dass man sich Gedanken gemacht hat, aber auch praktisch sein. Wir helfen dir mit einer Übersicht der beliebtesten Geschenkideen.",
       "Romantische Geschenke: Personalisierter Schmuck mit Gravur, ein selbst gestaltetes Fotoalbum, ein Wochenendausflug oder ein Candle-Light-Dinner zu Hause. Praktische Geschenke: hochwertige Kosmetik, ein Gutschein für den Lieblingsladen oder ein Abo für ihre Lieblingszeitschrift.",
       "Besonders gut kommen Erlebnisgeschenke an: ein gemeinsamer Kochkurs, ein Tag im Spa oder eine Ballonfahrt. Diese schaffen Erinnerungen, die bleiben. Alternativ: Frage einfach, ob sie eine Wunschliste hat – so triffst du garantiert ins Schwarze.",
+    ],
+    products: [
+      { asin: "B08CZ8PN1L", title: "LIEBESKIND Berlin Armband", price: "34,90 €" },
+      { asin: "B0BNT6XNL3", title: "Geschenkset mit Duftkerze", price: "24,99 €" },
     ],
   },
   {
@@ -155,6 +190,10 @@ export const blogPosts: BlogPost[] = [
       "Auch Erlebnisse sind toll: ein Tag im Kletterpark, Konzertkarten für seine Lieblingsband, ein Rennwagen-Erlebnis oder ein Escape-Room-Besuch. Mode und Accessoires: eine hochwertige Uhr, ein Ledergürtel oder eine stylische Umhängetasche.",
       "Tipp: Erstelle gemeinsam eine Wunschliste – so weißt du immer, was ihm gefällt. Und du vermeidest doppelte Geschenke von Freunden und Familie.",
     ],
+    products: [
+      { asin: "B0B7Z9P8H7", title: "JBL Charge 5 Bluetooth-Lautsprecher", price: "149,00 €" },
+      { asin: "B09Y6X6D5F", title: "Logitech G502 Hero Gaming Maus", price: "39,90 €" },
+    ],
   },
   {
     slug: "geschenke-mama",
@@ -173,6 +212,10 @@ export const blogPosts: BlogPost[] = [
       "Klassiker, die immer gehen: Blumenstrauß mit persönlicher Karte, ein Gutschein für einen gemeinsamen Wellness-Tag, eine schöne Handtasche oder ein hochwertiger Schal. Für die kreative Mama: ein Malkurs, Töpferworkshop oder Kochkurs.",
       "Praktische Geschenke: ein E-Reader für Buchliebhaberinnen, eine SodaStream für Sprudelfans, eine hochwertige Pfanne oder ein Multi-Zerkleinerer für die Hobbyköchin. Persönliche Geschenke: ein Fotobuch mit Familienfotos oder ein selbst gemaltes Bild.",
       "Tipp: Lege eine Familien-Wunschliste an, auf der jedes Familienmitglied seine Wünsche einträgt. So sehen alle, was Mama sich wirklich wünscht.",
+    ],
+    products: [
+      { asin: "B09WN3N3K6", title: "Sodastream Sirup Variety Pack", price: "19,99 €" },
+      { asin: "B0BKZ87L6P", title: "Kindle Paperwhite 2024", price: "159,99 €" },
     ],
   },
   {
@@ -193,6 +236,10 @@ export const blogPosts: BlogPost[] = [
       "Für den Genießer: ein Whisky-Tasting, eine Kaffeemaschine, ein Abo für einen Wein- oder Bierclub. Technik-Geschenke: ein Tablet, kabellose Ohrhörer, ein Smart-Home-Lautsprecher oder eine Dashcam.",
       "Tipp: Lege eine Wunschliste für Papa an und lass ihn selbst eintragen, was ihm gefällt. So vermeidest du Enttäuschungen und triffst garantiert ins Schwarze.",
     ],
+    products: [
+      { asin: "B0B8V86P96", title: "Grillzange mit Gravur", price: "19,99 €" },
+      { asin: "B0B1P3V6L9", title: "Ankerkraut Grill Gewürzset", price: "26,41 €" },
+    ],
   },
   {
     slug: "geschenke-oma",
@@ -211,6 +258,10 @@ export const blogPosts: BlogPost[] = [
       "Beliebte Geschenke: ein selbst gestaltetes Fotobuch mit Enkelfotos, ein Gutschein für Kaffee und Kuchen bei ihrem Lieblingscafé, ein warmes Tuch oder ein Kuschelschal, ein E-Book-Reader für Leseratten und eine Pflanzenpatenschaft für den Gartenfan.",
       "Zeit ist das wertvollste Geschenk für Oma: ein gemeinsamer Nachmittag, ein Ausflug oder einfach ein langes Telefonat. Kombiniert mit einer selbst gebackenen Torte oder Blumen aus dem Garten.",
       "Tipp: Zeige Oma, wie sie eine Wunschliste benutzt – dann kann sie dir ganz leicht sagen, was sie sich wünscht.",
+    ],
+    products: [
+      { asin: "B0BKZ87L6P", title: "Kindle Paperwhite 2024", price: "159,99 €" },
+      { asin: "B0C5M6N7K3", title: "Personalisierter Foto-Kalender", price: "14,99 €" },
     ],
   },
   {
@@ -231,6 +282,10 @@ export const blogPosts: BlogPost[] = [
       "Für den Gemütlichen: ein bequemer Ohrensessel, eine Wärmflasche mit Bezug, ein Radio für die Werkstatt oder ein Abo seiner Lieblingszeitschrift. Gemeinsame Zeit: ein Angeltag, Schach spielen oder ein Besuch im Technikmuseum.",
       "Tipp: Viele Opas freuen sich über Hilfe bei der Bedienung von Technik – ein gemeinsamer Nachmittag, an dem du ihm sein Smartphone erklärst, ist oft das schönste Geschenk.",
     ],
+    products: [
+      { asin: "B0B1P3V6L9", title: "Ankerkraut Grill Gewürzset", price: "26,41 €" },
+      { asin: "B0B3K5N7L2", title: "Multitool mit Gravur", price: "24,99 €" },
+    ],
   },
   {
     slug: "geschenke-40-geburtstag",
@@ -249,6 +304,10 @@ export const blogPosts: BlogPost[] = [
       "Humorvolle Geschenke: eine Tasse mit '40 – immer noch nicht erwachsen', ein Anti-Falten-Set als Scherz, ein Buch mit '40 Dinge, die man mit 40 wissen sollte'. Nützliche Geschenke: eine hochwertige Lederjacke, ein Weinschrank oder ein Smoker-Grill.",
       "Erlebnisgeschenke: eine Ballonfahrt, ein Cocktail-Kurs, ein Wochenendtrip in eine europäische Metropole. Für die sportliche Variante: ein Rennrad oder eine Mitgliedschaft im Fitnessstudio.",
       "Tipp: Erstelle eine Wunschliste für deinen 40. Geburtstag und teile sie mit allen Gästen. So stellst du sicher, dass du genau bekommst, was du dir wünschst.",
+    ],
+    products: [
+      { asin: "B0B6G5X4TG", title: "Sony WH-1000XM5 Kopfhörer", price: "299,00 €" },
+      { asin: "B0CGV6X5D3", title: "Siemens Kaffeemaschine EQ.6", price: "599,99 €" },
     ],
   },
   {
@@ -269,6 +328,10 @@ export const blogPosts: BlogPost[] = [
       "Für die Feierlaune: eine Party-Planung mit Überraschungsgästen, ein Catering für die Geburtstagsfeier oder ein professioneller Fotograf für die Feier. Nachhaltige Geschenke: ein Baum pflanzen lassen oder eine Patenschaft verschenken.",
       "Praktische Geschenke für den Haushalt: ein Hochdruckreiniger, eine Kaffeemaschine oder ein neuer Fernseher. Am besten auf der Wunschliste reservieren, damit es keine Doppelungen gibt.",
     ],
+    products: [
+      { asin: "B0DGZQSMNX", title: "AMAVEL Whiskyglas mit Gravur", price: "19,95 €" },
+      { asin: "B09W7J6L3D", title: "Personalisierte Fotobox", price: "34,99 €" },
+    ],
   },
   {
     slug: "geschenke-60-geburtstag",
@@ -288,6 +351,10 @@ export const blogPosts: BlogPost[] = [
       "Gesundheit & Wellness: eine Massage-Matte, ein Spa-Gutschein, eine Yogamatte mit Kursen, ein Luftreiniger oder ein hochwertiges Bettlaken-Set. Kulinarik: ein Kochkurs für die mediterrane Küche, ein Abo für Gewürze aus aller Welt oder ein Smoker für den Garten.",
       "Tipp: Eine gemeinsame Feier mit Freunden und Familie ist das größte Geschenk. Eine Wunschliste hilft allen Gästen, das passende Geschenk zu finden und Doppelungen zu vermeiden.",
     ],
+    products: [
+      { asin: "B0B9G6H5D4", title: "Theraband Massage Gun", price: "89,99 €" },
+      { asin: "B0BKZ87L6P", title: "Kindle Paperwhite 2024", price: "159,99 €" },
+    ],
   },
   {
     slug: "geschenke-geburtstagsliste",
@@ -306,6 +373,10 @@ export const blogPosts: BlogPost[] = [
       "Vorteile einer online Geburtstagsliste: Du kannst jederzeit von überall Geschenke hinzufügen. Deine Gäste sehen in Echtzeit, was bereits reserviert wurde. Preis und Verfügbarkeit sind immer aktuell. Du kannst Links zu Produkten aus verschiedenen Shops einfügen.",
       "Bei Wunschfee geht das besonders einfach: Nach der kostenlosen Registrierung erstellst du in Sekunden deine Liste. Füge Amazon-Links ein – Titel, Bild und Preis werden automatisch erkannt. Teile den Link per WhatsApp oder E-Mail.",
       "Deine Gäste können Geschenke reservieren, ohne dass du erfährst, wer was reserviert hat. So bleibt die Überraschung erhalten. Probiere es aus – es ist kostenlos.",
+    ],
+    products: [
+      { asin: "B0CBY8TY3L", title: "Amazon Echo Dot (5. Gen.) mit Uhr", price: "64,99 €" },
+      { asin: "B09XKRMKL3", title: "Amazon Fire TV Stick 4K Max", price: "69,99 €" },
     ],
   },
   {
@@ -327,6 +398,10 @@ export const blogPosts: BlogPost[] = [
       "Erlebnisse statt Dinge: ein gemeinsamer Ausflug in die Natur, ein Workshop zu nachhaltigem Leben, eine Führung auf dem Bauernhof oder ein Gutschein für ein vegetarisches Restaurant.",
       "Tipp: Lege eine Wunschliste mit nachhaltigen Produkten an und teile sie mit Freunden und Familie. So unterstützt ihr gemeinsam die Umwelt.",
     ],
+    products: [
+      { asin: "B0B4H6K7M5", title: "pandoo Starter Set Bambus", price: "39,99 €" },
+      { asin: "B0C7D8F3L6", title: "Bienenwachstücher Set", price: "14,99 €" },
+    ],
   },
   {
     slug: "last-minute-geschenke",
@@ -347,6 +422,10 @@ export const blogPosts: BlogPost[] = [
       "Option 3: Der Klassiker unter den Last-Minute-Geschenken: ein liebevoll gestalteter Geschenkkorb mit Leckereien aus dem Supermarkt, einer guten Flasche Wein und einer selbst geschriebenen Karte.",
       "Tipp für die Zukunft: Lege auf Wunschfee eine Wunschliste an, damit deine Freunde und Familie immer wissen, was du dir wünschst – und du nie wieder Last-Minute suchen musst.",
     ],
+    products: [
+      { asin: "B0C1D2E3F4", title: "Amazon.de Geschenkgutschein", price: "ab 10,00 €" },
+      { asin: "B09WN3N3K6", title: "Sodastream Sirup Variety Pack", price: "19,99 €" },
+    ],
   },
   {
     slug: "geschenke-budget",
@@ -365,6 +444,10 @@ export const blogPosts: BlogPost[] = [
       "Geschenke unter 10 Euro: selbst gebackene Plätzchen im Einmachglas, eine handgeschriebene Karte mit persönlicher Widmung, ein selbst gemachter Badebomben-Set, eine Pflanzenableger in einem hübschen Töpfchen oder ein gestrickter Schal.",
       "Geschenke unter 25 Euro: ein schöner Bildband aus dem Second-Hand-Laden, ein personalisierter Schlüsselanhänger, ein Brettspiel, eine Tasse mit selbst gestaltetem Motiv oder hochwertige Tees im Geschenkset.",
       "Der Wert eines Geschenks liegt nicht im Preis, sondern in der Geste. Ein selbst gemachtes Geschenk zeigt, dass du dir Zeit genommen hast – das ist mehr wert als jedes teure Produkt.",
+    ],
+    products: [
+      { asin: "B0B4H6K7M5", title: "pandoo Starter Set Bambus", price: "39,99 €" },
+      { asin: "B0B1P3V6L9", title: "Ankerkraut Grill Gewürzset", price: "26,41 €" },
     ],
   },
   {
@@ -386,6 +469,10 @@ export const blogPosts: BlogPost[] = [
       "Spiele als Geschenk: Ein Gutschein für Steam, PlayStation Store oder Xbox Store ist immer eine gute Wahl. Alternativ: spezielle Editionen von Spielen mit Sammlerfiguren, Artbooks oder Soundtracks.",
       "Tipp: Erstelle eine Wunschliste mit deinen Wunschspielen - so können Freunde und Familie genau das richtige Spiel auswählen.",
     ],
+    products: [
+      { asin: "B09Y6X6D5F", title: "Logitech G502 Hero Gaming Maus", price: "39,90 €" },
+      { asin: "B07QKX7J8H", title: "Razer Kraken Gaming Headset", price: "59,99 €" },
+    ],
   },
   {
     slug: "geschenke-buchliebhaber",
@@ -405,6 +492,10 @@ export const blogPosts: BlogPost[] = [
       "Accessoires für Leseratten: eine besondere Leselampe mit warmem Licht, ein Buchständer aus Holz, coole Lesezeichen aus Metall oder Leder, eine Tasse mit Buch-Zitat oder ein bequemer Lesesessel.",
       "Buch-Zubehör: eine hochwertige Lesebrille, eine Aufbewahrungsbox für Bücher, persönliche Exlibris-Stempel für die eigenen Bücher, ein Bücherregal zum Aufhängen oder eine Lesedecke für gemütliche Stunden.",
       "Der Klassiker: ein Gutschein für die lokale Buchhandlung mit einer persönlichen Empfehlung. Oder ein gemeinsamer Besuch auf einer Buchmesse.",
+    ],
+    products: [
+      { asin: "B0BKZ87L6P", title: "Kindle Paperwhite 2024", price: "159,99 €" },
+      { asin: "B0C3D4E5F6", title: "Leselampe mit warmem Licht", price: "24,99 €" },
     ],
   },
   {
@@ -426,6 +517,10 @@ export const blogPosts: BlogPost[] = [
       "Kulinarische Erlebnisse: ein Kochkurs (italienisch, thailändisch, Sushi), ein Gewürz-Abo aus aller Welt, ein Besuch auf dem Wochenmarkt mit gemeinsamem Kochen oder eine Weinprobe mit Käsebegleitung.",
       "Tipp: Lege eine Wunschliste mit Küchenutensilien an, damit deine Liebsten genau das Richtige für dich finden.",
     ],
+    products: [
+      { asin: "B0B6H7J8L9", title: "Wüsthof Kochmesser Set", price: "149,00 €" },
+      { asin: "B0B1P3V6L9", title: "Ankerkraut Grill Gewürzset", price: "26,41 €" },
+    ],
   },
   {
     slug: "geschenke-fitness-sport",
@@ -446,6 +541,10 @@ export const blogPosts: BlogPost[] = [
       "Trainingszubehör: ein Springseil fürs Konditionstraining, eine Yogamatte aus Kork, ein Satz Kurzhanteln, ein Resistance-Band-Set, eine Trinkflasche mit Zeitmarkierung oder ein Faszienrolle für die Muskelregeneration.",
       "Erlebnisse: ein Personal-Training, ein Outdoor-Bootcamp, ein Kletterkurs in der Halle, eine Yoga-Retreat oder ein Startnummernhalter für den ersten Marathon.",
     ],
+    products: [
+      { asin: "B0B7G5H6L3", title: "Garmin Venu 3 Smartwatch", price: "449,99 €" },
+      { asin: "B0B4M6N7P3", title: "Yogamatte aus Kork", price: "34,99 €" },
+    ],
   },
   {
     slug: "geschenke-familie-weihnachten",
@@ -464,6 +563,10 @@ export const blogPosts: BlogPost[] = [
       "Der Plan: Jedes Familienmitglied erstellt eine eigene Liste auf Wunschfee. Alle Wünsche werden gesammelt: von Omas Strickwolle bis zum Enkels Gaming-Headset. Jeder kann sehen, was die anderen sich wünschen, und Geschenke reservieren.",
       "Praktisch: Niemand kauft doppelt. Die Beschenkten sehen nicht, wer was reserviert hat – die Überraschung bleibt bis unterm Baum erhalten.",
       "Ein Tipp für die ganze Familie: Startet die Wunschlisten rechtzeitig vor Weihnachten. So haben alle genug Zeit, die Wünsche zu sammeln und die Geschenke in Ruhe zu besorgen.",
+    ],
+    products: [
+      { asin: "B0BXX3N4FQ", title: "LEGO Classic Kreativ-Baukasten", price: "29,99 €" },
+      { asin: "B07QKX7J8H", title: "Razer Kraken Gaming Headset", price: "59,99 €" },
     ],
   },
   {
@@ -486,6 +589,10 @@ export const blogPosts: BlogPost[] = [
       "10-12 Jahre: Fußball, Lerncomputer, Spielekonsole, Abenteuer-Roman, Freundebuch oder ein cooles Skateboard.",
       "Tipp: Lege eine Wunschliste für dein Kind an, damit Oma, Opa und Freunde genau wissen, was gebraucht wird – und nichts doppelt gekauft wird.",
     ],
+    products: [
+      { asin: "B0BXX3N4FQ", title: "LEGO Classic Kreativ-Baukasten", price: "29,99 €" },
+      { asin: "B0C3D4K6L8", title: "Kinderbuchset \"Die schönsten Geschichten\"", price: "19,99 €" },
+    ],
   },
   {
     slug: "geschenke-pärchen",
@@ -505,6 +612,10 @@ export const blogPosts: BlogPost[] = [
       "Geschenke für Zuhause: ein hochwertiges Brettspiel für den Spieleabend, eine Kaffeemaschine mit zwei Tassen, ein Fondueset oder Raclette-Grill, ein personalisiertes Fotoalbum, ein Wein-Abo oder eine Filmbox mit Snacks.",
       "Reisegeschenke: ein Gutschein für ein Wochenende in einer romantischen Stadt, ein Wellness-Wochenende, ein Zeltausflug mit Campingausrüstung oder ein Gutschein für einen Kurzurlaub.",
       "Tipp: Erstelle eine gemeinsame Wunschliste für das Paar. So können auch andere Gäste zu besonderen Anlässen genau das Richtige schenken.",
+    ],
+    products: [
+      { asin: "B0BQ7P5P8T", title: "Fondue-Set für 2 Personen", price: "39,99 €" },
+      { asin: "B0CJ5J8QZP", title: "Personalisierte Holzbox mit Gravur", price: "29,99 €" },
     ],
   },
   {
@@ -526,6 +637,10 @@ export const blogPosts: BlogPost[] = [
       "Persönliche Geschenke: ein gemeinsames Fotobuch mit den schönsten Erinnerungen, ein Lied, das ihr gemeinsam aufgenommen habt, ein selbst geschriebener Liebesbrief, ein eingerahmtes Foto von euch beiden oder eine Karte mit '100 Gründen, warum ich dich liebe'.",
       "Tipp: Ein gemeinsamer Besuch auf einer Wunschliste und das Teilen von Geschenkideen kann eine schöne gemeinsame Aktivität sein – und du weißt genau, was dein Schatz sich wünscht.",
     ],
+    products: [
+      { asin: "B08CZ8PN1L", title: "LIEBESKIND Berlin Armband", price: "34,90 €" },
+      { asin: "B0C5M6N7K3", title: "Personalisierter Foto-Kalender", price: "14,99 €" },
+    ],
   },
   {
     slug: "geschenke-einschulung",
@@ -545,6 +660,10 @@ export const blogPosts: BlogPost[] = [
       "Lernspiele und Bücher: ein ABC-Poster, ein Rechenspiel für die ersten Matheversuche, ein Buchstaben-Lernspiel, ein kindgerechter Atlas oder ein Erstlesebuch.",
       "Erlebnisse: ein Ausflug in den Zoo oder Freizeitpark zur Feier des Tages, ein Besuch im Kindermuseum, ein gemeinsames Eisessen nach dem ersten Schultag oder ein Gutschein für den Buchladen.",
       "Tipp: Lege eine Wunschliste für den Schulstart an. So können alle Verwandten genau das schenken, was das Kind für die Schule braucht.",
+    ],
+    products: [
+      { asin: "B0C7D8K9L2", title: "Schulranzen Set Ergobag", price: "199,99 €" },
+      { asin: "B0B4H6K7M5", title: "pandoo Starter Set Bambus", price: "39,99 €" },
     ],
   },
   {
@@ -566,6 +685,10 @@ export const blogPosts: BlogPost[] = [
       "Persönliche Geschenke: ein selbst gestaltetes Poesiealbum mit Glückwünschen der Gäste, ein Bild mit persönlicher Widmung, eine Kette mit dem Konfirmationsspruch graviert oder ein Gästebuch für die Feier.",
       "Tipp: Der Jugendliche kann auf Wunschfee eine Wunschliste anlegen und mit allen Gästen teilen. So gibt es keine doppelten Geschenke und jeder findet das passende Präsent.",
     ],
+    products: [
+      { asin: "B0BKZ87L6P", title: "Kindle Paperwhite 2024", price: "159,99 €" },
+      { asin: "B0DGZQSMNX", title: "AMAVEL Whiskyglas mit Gravur", price: "19,95 €" },
+    ],
   },
   {
     slug: "geschenke-weihnachten-bescherung",
@@ -585,6 +708,10 @@ export const blogPosts: BlogPost[] = [
       "Schritt 2: Reservieren. Sobald die Listen fertig sind, können alle Familienmitglieder stöbern und reservieren. So sieht jeder auf einen Blick, was noch frei ist – keine Doppelungen mehr.",
       "Schritt 3: Rechtzeitig bestellen. Mit dem reservierten Link kann das Geschenk direkt bestellt werden. Dank der Vorplanung bleibt genug Zeit für die Lieferung.",
       "Extra: Die Überraschung bleibt erhalten, denn die Beschenkten sehen nicht, wer was reserviert hat. Am Heiligabend gibt es dann nur noch Freude und keine bösen Überraschungen.",
+    ],
+    products: [
+      { asin: "B0CBY8TY3L", title: "Amazon Echo Dot (5. Gen.) mit Uhr", price: "64,99 €" },
+      { asin: "B09XKRMKL3", title: "Amazon Fire TV Stick 4K Max", price: "69,99 €" },
     ],
   },
 ];

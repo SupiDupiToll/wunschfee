@@ -6,6 +6,7 @@ import { Footer } from "@/components/shared/footer";
 import { blogPosts, type BlogPost } from "@/lib/blog";
 import { JsonLd } from "@/components/shared/json-ld";
 import { ArrowLeft } from "lucide-react";
+import { ProductCard } from "@/components/blog/product-card";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -99,6 +100,19 @@ export default async function BlogArticlePage({ params }: Props) {
                 <p key={i}>{paragraph}</p>
               ))}
             </div>
+
+            {post.products && post.products.length > 0 && (
+              <div className="mt-8">
+                <p className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Passende Produkte auf Amazon
+                </p>
+                <div className="space-y-3">
+                  {post.products.map((product) => (
+                    <ProductCard key={product.asin} product={product} />
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="mt-10 rounded-lg border border-primary/20 bg-primary/5 p-4 text-center text-sm">
               <p>
