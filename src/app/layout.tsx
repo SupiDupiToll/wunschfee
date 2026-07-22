@@ -60,7 +60,7 @@ export default function RootLayout({
   return (
     <html lang="de" className={`${inter.variable} ${playfair.variable}`}>
       <head>
-        <meta name="impact-site-verification" value="0394a9e1-e19b-4264-a8fc-16f6c2d72675" />
+        <meta name="impact-site-verification" {...{ value: "0394a9e1-e19b-4264-a8fc-16f6c2d72675" } as any} />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased">
         <HexclaveProvider app={hexclaveServerApp} lang="de-DE">
