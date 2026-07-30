@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Trash2, Pencil, Eye } from "lucide-react";
+import { Trash2, Pencil, Eye, Lock, Gift } from "lucide-react";
 import { useState } from "react";
 import { EditItemModal } from "./edit-item-modal";
 import { ProductDetailModal } from "./product-detail-modal";
@@ -45,18 +45,27 @@ export function GiftCard({ item, list: _list, isOwner }: GiftCardProps) {
 
   return (
     <>
-      <Card className="overflow-hidden transition-all hover:shadow-md">
+      <Card
+        className="cursor-pointer overflow-hidden transition-all hover:shadow-md"
+        onClick={() => setShowDetailModal(true)}
+      >
         <CardContent className="relative flex gap-4 p-4">
           {isOwner && (
             <>
               <button
-                onClick={() => setShowEditModal(true)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowEditModal(true);
+                }}
                 className="absolute top-2 right-10 z-10 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
               >
                 <Pencil className="h-4 w-4" />
               </button>
               <AlertDialog>
-                <AlertDialogTrigger className="absolute top-2 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive">
+                <AlertDialogTrigger
+                  onClick={(e) => e.stopPropagation()}
+                  className="absolute top-2 right-2 z-10 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive"
+                >
                   <Trash2 className="h-4 w-4" />
                 </AlertDialogTrigger>
                 <AlertDialogContent>
@@ -95,6 +104,14 @@ export function GiftCard({ item, list: _list, isOwner }: GiftCardProps) {
                 🎁
               </div>
             )}
+            {item.isReserved && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                <div className="flex items-center gap-1 rounded-full bg-background/95 px-2.5 py-1 text-xs font-medium shadow-sm">
+                  <Lock className="h-3 w-3" />
+                  Reserviert
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="flex min-w-0 flex-1 flex-col justify-between">
@@ -116,6 +133,15 @@ export function GiftCard({ item, list: _list, isOwner }: GiftCardProps) {
                   {item.store}
                 </Badge>
               )}
+              {item.isReserved && (
+                <Badge
+                  variant="outline"
+                  className="mt-1 gap-1 border-primary/40 text-xs text-primary"
+                >
+                  <Gift className="h-3 w-3" />
+                  Reserviert
+                </Badge>
+              )}
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -123,7 +149,10 @@ export function GiftCard({ item, list: _list, isOwner }: GiftCardProps) {
                 size="sm"
                 variant="outline"
                 className="gap-1.5"
-                onClick={() => setShowDetailModal(true)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowDetailModal(true);
+                }}
               >
                 <Eye className="h-3.5 w-3.5" />
                 Ansehen
