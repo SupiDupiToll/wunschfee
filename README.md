@@ -108,6 +108,6 @@ src/
 └── db/                     # Prisma-Client & Schema-Typen
 ```
 
-## Lizenz
+## License
 
-Privat. Nur für den autorisierten Gebrauch.
+[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/legalcode.en)
